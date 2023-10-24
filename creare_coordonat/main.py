@@ -3,7 +3,7 @@ import os
 
 
 def change_dir_picture():
-    '''Changing wd to the directory where images are stored.'''
+    """ Changing wd to the directory where images are stored. """
     pass
     # if os.getcwd() == r'../crerare_coordonate':
     #     os.chdir(r'/Licenta/poze')
