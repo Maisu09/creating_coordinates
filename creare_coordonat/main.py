@@ -1,5 +1,14 @@
 import cv2 as cv
 import os
+import tkinter as tk
+from tkinter import filedialog
+
+image = None
+points_x = [40, 100]  # Your existing list of X coordinates
+points_y = [50, 599]  # Your existing list of Y coordinates
+dragging = None
+offset_x = 0
+offset_y = 0
 
 
 def change_dir_picture():
@@ -64,15 +73,97 @@ def save_traced_img(img_copy):
         print('The current working directory is not well defined!')
 
 
+def load_image():
+    global image
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        image = cv.imread(file_path)
+
+
+def draw_points():
+    if image is not None:
+        for x, y in zip(points_x, points_y):
+            cv.circle(image, (x, y), 5, (0, 0, 255), -1)
+        update_image()
+
+
+def update_image():
+    if image is not None:
+        cv.imshow("Image with Points", image)
+
+
+def save_image_with_points():
+    if image is not None:
+        for x, y in zip(points_x, points_y):
+            cv.circle(image, (x, y), 5, (0, 0, 255), -1)
+        file_path = filedialog.asksaveasfilename(defaultextension=".jpg")
+        if file_path:
+            cv.imwrite(file_path, image)
+
+
+def on_drag_start(event):
+    global dragging, offset_x, offset_y
+    if image is not None:
+        x, y = event.x, event.y
+        for i in range(len(points_x)):
+            px, py = points_x[i], points_y[i]
+            if abs(x - px) < 5 and abs(y - py) < 5:
+                dragging = i
+                offset_x = x - px
+                offset_y = y - py
+
+
+def on_drag(event):
+    if dragging is not None:
+        x, y = event.x, event.y
+        points_x[dragging] = x - offset_x
+        points_y[dragging] = y - offset_y
+        update_image()
+
+
+def on_drag_end(event):
+    global dragging
+    dragging = None
+
+
+def moving_points():
+    root = tk.Tk()
+    root.title("Image Point Editor")
+
+    # Create GUI elements
+    load_button = tk.Button(root, text="Load Image", command=load_image)
+    load_button.pack()
+
+    draw_button = tk.Button(root, text="Draw Points", command=draw_points)
+    draw_button.pack()
+
+    canvas = tk.Canvas(root, width=800, height=600)
+    canvas.pack()
+    canvas.bind("<ButtonPress-1>", on_drag_start)
+    canvas.bind("<B1-Motion>", on_drag)
+    canvas.bind("<ButtonRelease-1>", on_drag_end)
+
+    save_button = tk.Button(root, text="Save Image with Points", command=save_image_with_points)
+    save_button.pack()
+
+    # OpenCV window
+    cv.namedWindow("Image with Points", cv.WINDOW_NORMAL)
+
+    # Start the main loop
+    root.mainloop()
+    cv.destroyAllWindows()
+
+
 def main():
-    change_dir_picture()
+    # change_dir_picture()
 
     # reading image
-    img = cv.imread('unu.jpg')
-    assert img is not None, "file could not be read, check with os.path.exists()"
+    # img = cv.imread('unu.jpg')
+    # assert img is not None, "file could not be read, check with os.path.exists()"
 
     # object detection and contour draw
-    threshold_obj_detection(img)
+    # threshold_obj_detection(img)
+    moving_points()
 
 
 if __name__ == "__main__":
