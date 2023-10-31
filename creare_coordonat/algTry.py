@@ -62,75 +62,391 @@ import numpy as np
 # cv2.imshow('image', img_copy)
 # cv2.waitKey(0)
 
-def GUI1():
-    # GUI
+# def GUI1():
+#     # GUI
+#
+#     import PySimpleGUI as sg
+#     import os.path
+#
+#     # First the window layout in 2 columns
+#
+#     file_list_column = [
+#         [
+#             sg.Text("Image Folder"),
+#             sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
+#             sg.FolderBrowse(),
+#         ],
+#         [
+#             sg.Listbox(
+#                 values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
+#             )
+#         ],
+#     ]
+#
+#     # For now will only show the name of the file that was chosen
+#     image_viewer_column = [
+#         [sg.Text("Choose an image from list on left:")],
+#         [sg.Text(size=(40, 1), key="-TOUT-")],
+#         [sg.Image(key="-IMAGE-")],
+#     ]
+#
+#     # ----- Full layout -----
+#     layout = [
+#         [
+#             sg.Column(file_list_column),
+#             sg.VSeperator(),
+#             sg.Column(image_viewer_column),
+#         ]
+#     ]
+#
+#     window = sg.Window("Image Viewer", layout)
+#
+#     # Run the Event Loop
+#     while True:
+#         event, values = window.read()
+#         if event == "Exit" or event == sg.WIN_CLOSED:
+#             break
+#         # Folder name was filled in, make a list of files in the folder
+#         if event == "-FOLDER-":
+#             folder = values["-FOLDER-"]
+#             try:
+#                 # Get list of files in folder
+#                 file_list = os.listdir(folder)
+#             except:
+#                 file_list = []
+#
+#             fnames = [
+#                 f
+#                 for f in file_list
+#                 if os.path.isfile(os.path.join(folder, f))
+#                 and f.lower().endswith((".png", ".jpg"))
+#             ]
+#             window["-FILE LIST-"].update(fnames)
+#         elif event == "-FILE LIST-":  # A file was chosen from the listbox
+#             try:
+#                 filename = os.path.join(
+#                     values["-FOLDER-"], values["-FILE LIST-"][0]
+#                 )
+#                 window["-TOUT-"].update(filename)
+#                 window["-IMAGE-"].update(filename=filename)
+#
+#             except:
+#                 pass
+#
+#     window.close()
 
-    import PySimpleGUI as sg
-    import os.path
+# import sys
+# import cv2
+# import numpy as np
+# from PyQt5.QtCore import Qt, QPoint
+# from PyQt5.QtGui import QImage, QPixmap
+# from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+# class ImagePointMover(QMainWindow):
+#     def __init__(self, image_path):
+#         super().__init__()
+#         self.image = cv2.imread(image_path)
+#         self.image_rgb = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+#         self.height, self.width, _ = self.image.shape
+#         self.setWindowTitle("Image Point Mover")
+#         self.setGeometry(100, 100, self.width, self.height)
+#
+#         self.image_label = QLabel()
+#         self.image_label.setAlignment(Qt.AlignCenter)
+#         self.image_label.setMouseTracking(True)
+#
+#         self.central_widget = QWidget()
+#         self.setCentralWidget(self.central_widget)
+#         layout = QVBoxLayout(self.central_widget)
+#         layout.addWidget(self.image_label)
+#
+#         self.points = []  # List to store points (x, y)
+#
+#         self.load_image()
+#         self.image_label.mouseMoveEvent = self.mouse_move
+#
+#     def load_image(self):
+#         q_image = QImage(
+#             self.image_rgb.data, self.width, self.height, self.width * 3, QImage.Format_RGB888
+#         )
+#         pixmap = QPixmap.fromImage(q_image)
+#         self.image_label.setPixmap(pixmap)
+#
+#     def mouse_move(self, event):
+#         if event.buttons() == Qt.LeftButton:
+#             x, y = event.x(), event.y()
+#             self.points.append((x, y))
+#             cv2.circle(self.image, (x, y), 3, (0, 0, 255), -1)
+#             self.load_image()
+#
+# if __name__ == '__main__':
+#     if len(sys.argv) != 2:
+#         print("Usage: python image_point_mover.py <image_path>")
+#         sys.exit(1)
+#
+#     app = QApplication(sys.argv)
+#     image_path = sys.argv[1]
+#     window = ImagePointMover(image_path)
+#     window.show()
+#     sys.exit(app.exec_())
 
-    # First the window layout in 2 columns
+# import pygame
+#
+# pygame.init()
+#
+# size = [400, 500]
+# screen = pygame.display.set_mode(size)
+#
+# done = False
+#
+# while done == False:
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             done = True
+#
+#     screen.fill()
 
-    file_list_column = [
-        [
-            sg.Text("Image Folder"),
-            sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
-            sg.FolderBrowse(),
-        ],
-        [
-            sg.Listbox(
-                values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
-            )
-        ],
-    ]
+#
+# import cv2
+# import tkinter as tk
+# from tkinter import filedialog
+# import numpy as np
+#
+# # Define global variables to store the image and points
+# image = None
+# points = []
+#
+# def load_image():
+#     global image, points
+#     file_path = filedialog.askopenfilename()
+#     if file_path:
+#         image = cv2.imread(file_path)
+#         points = []
+#
+# def draw_points(event):
+#     if image is not None:
+#         x, y = event.x, event.y
+#         points.append((x, y))
+#         cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+#         update_image()
+#
+# def update_image():
+#     if image is not None:
+#         cv2.imshow("Image with Points", image)
+#
+# def save_image_with_points():
+#     if image is not None:
+#         for point in points:
+#             cv2.circle(image, point, 5, (0, 0, 255), -1)
+#         file_path = filedialog.asksaveasfilename(defaultextension=".jpg")
+#         if file_path:
+#             cv2.imwrite(file_path, image)
+#
+# # Create the main window
+# root = tk.Tk()
+# root.title("Image Point Editor")
+#
+# # Create GUI elements
+# load_button = tk.Button(root, text="Load Image", command=load_image)
+# load_button.pack()
+#
+# canvas = tk.Canvas(root, width=800, height=600)
+# canvas.pack()
+# canvas.bind("<Button-1>", draw_points)
+#
+# save_button = tk.Button(root, text="Save Image with Points", command=save_image_with_points)
+# save_button.pack()
+#
+# # OpenCV window
+# cv2.namedWindow("Image with Points", cv2.WINDOW_NORMAL)
+#
+# # Start the main loop
+# root.mainloop()
+# cv2.destroyAllWindows()
+# #
+# import cv2
+# import tkinter as tk
+# from tkinter import filedialog
+# import numpy as np
+#
+# # Define global variables to store the image and points
+# image = None
+# points_x = []
+# points_y = []
+# dragging = None
+# offset_x = 0
+# offset_y = 0
+#
+# def load_image():
+#     global image, points_x, points_y
+#     file_path = filedialog.askopenfilename()
+#     if file_path:
+#         image = cv2.imread(file_path)
+#         points_x = []
+#         points_y = []
+#
+# def draw_points(event):
+#     if image is not None:
+#         x, y = event.x, event.y
+#         points_x.append(x)
+#         points_y.append(y)
+#         cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+#         update_image()
+#
+# def update_image():
+#     if image is not None:
+#         for i in range(len(points_x)):
+#             x, y = points_x[i], points_y[i]
+#             cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+#         cv2.imshow("Image with Points", image)
+#
+# def save_image_with_points():
+#     if image is not None:
+#         for i in range(len(points_x)):
+#             x, y = points_x[i], points_y[i]
+#             cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+#         file_path = filedialog.asksaveasfilename(defaultextension=".jpg")
+#         if file_path:
+#             cv2.imwrite(file_path, image)
+#
+# def on_drag_start(event):
+#     global dragging, offset_x, offset_y
+#     if image is not None:
+#         x, y = event.x, event.y
+#         for i in range(len(points_x)):
+#             px, py = points_x[i], points_y[i]
+#             if abs(x - px) < 5 and abs(y - py) < 5:
+#                 dragging = i
+#                 offset_x = x - px
+#                 offset_y = y - py
+#
+# def on_drag(event):
+#     if dragging is not None:
+#         x, y = event.x, event.y
+#         points_x[dragging] = x - offset_x
+#         points_y[dragging] = y - offset_y
+#         update_image()
+#
+# def on_drag_end(event):
+#     global dragging
+#     dragging = None
+#
+# # Create the main window
+# root = tk.Tk()
+# root.title("Image Point Editor")
+#
+# # Create GUI elements
+# load_button = tk.Button(root, text="Load Image", command=load_image)
+# load_button.pack()
+#
+# canvas = tk.Canvas(root, width=800, height=600)
+# canvas.pack()
+# canvas.bind("<Button-1>", draw_points)
+# canvas.bind("<ButtonPress-1>", on_drag_start)
+# canvas.bind("<B1-Motion>", on_drag)
+# canvas.bind("<ButtonRelease-1>", on_drag_end)
+#
+# save_button = tk.Button(root, text="Save Image with Points", command=save_image_with_points)
+# save_button.pack()
+#
+# # OpenCV window
+# cv2.namedWindow("Image with Points", cv2.WINDOW_NORMAL)
+#
+# # Start the main loop
+# root.mainloop()
+# cv2.destroyAllWindows()
 
-    # For now will only show the name of the file that was chosen
-    image_viewer_column = [
-        [sg.Text("Choose an image from list on left:")],
-        [sg.Text(size=(40, 1), key="-TOUT-")],
-        [sg.Image(key="-IMAGE-")],
-    ]
+import cv2
+import tkinter as tk
+from tkinter import filedialog
+import numpy as np
 
-    # ----- Full layout -----
-    layout = [
-        [
-            sg.Column(file_list_column),
-            sg.VSeperator(),
-            sg.Column(image_viewer_column),
-        ]
-    ]
+# Define global variables to store the image and points
+image = None
+points_x = [40, 100]  # Your existing list of X coordinates
+points_y = [50, 599]  # Your existing list of Y coordinates
+selected_point = None
+offset_x = 0
+offset_y = 0
 
-    window = sg.Window("Image Viewer", layout)
 
-    # Run the Event Loop
-    while True:
-        event, values = window.read()
-        if event == "Exit" or event == sg.WIN_CLOSED:
-            break
-        # Folder name was filled in, make a list of files in the folder
-        if event == "-FOLDER-":
-            folder = values["-FOLDER-"]
-            try:
-                # Get list of files in folder
-                file_list = os.listdir(folder)
-            except:
-                file_list = []
+def load_image():
+    global image
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        image = cv2.imread(file_path)
 
-            fnames = [
-                f
-                for f in file_list
-                if os.path.isfile(os.path.join(folder, f))
-                and f.lower().endswith((".png", ".jpg"))
-            ]
-            window["-FILE LIST-"].update(fnames)
-        elif event == "-FILE LIST-":  # A file was chosen from the listbox
-            try:
-                filename = os.path.join(
-                    values["-FOLDER-"], values["-FILE LIST-"][0]
-                )
-                window["-TOUT-"].update(filename)
-                window["-IMAGE-"].update(filename=filename)
 
-            except:
-                pass
+def draw_points():
+    if image is not None:
+        for x, y in zip(points_x, points_y):
+            cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+        update_image()
 
-    window.close()
+
+def update_image():
+    if image is not None:
+        cv2.imshow("Image with Points", image)
+
+
+def save_image_with_points():
+    if image is not None:
+        for x, y in zip(points_x, points_y):
+            cv2.circle(image, (x, y), 5, (0, 0, 255), -1)
+        file_path = filedialog.asksaveasfilename(defaultextension=".jpg")
+        if file_path:
+            cv2.imwrite(file_path, image)
+
+
+def on_drag_start(event):
+
+    global selected_point, offset_x, offset_y
+    if image is not None:
+        x, y = event.x, event.y
+        for i in range(len(points_x)):
+            px, py = points_x[i], points_y[i]
+            if abs(x - px) < 5 and abs(y - py) < 5:
+                selected_point = i
+                offset_x = x - px
+                offset_y = y - py
+                break
+
+
+def on_drag(event):
+    if selected_point is not None:
+        x, y = event.x, event.y
+        points_x[selected_point] = x - offset_x
+        points_y[selected_point] = y - offset_y
+        update_image()
+
+
+def on_drag_end(event):
+    global selected_point
+    selected_point = None
+
+
+# Create the main window
+root = tk.Tk()
+root.title("Image Point Editor")
+
+# Create GUI elements
+load_button = tk.Button(root, text="Load Image", command=load_image)
+load_button.pack()
+
+draw_button = tk.Button(root, text="Draw Points", command=draw_points)
+draw_button.pack()
+
+canvas = tk.Canvas(root, width=800, height=600)
+canvas.pack()
+canvas.bind("<Button-1>", on_drag_start)
+canvas.bind("<B1-Motion>", on_drag)
+canvas.bind("<ButtonRelease-1>", on_drag_end)
+
+save_button = tk.Button(root, text="Save Image with Points", command=save_image_with_points)
+save_button.pack()
+
+# OpenCV window
+cv2.namedWindow("Image with Points", cv2.WINDOW_NORMAL)
+
+# Start the main loop
+root.mainloop()
+cv2.destroyAllWindows()
