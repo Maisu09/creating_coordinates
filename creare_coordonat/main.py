@@ -1,14 +1,17 @@
-import cv2 as cv
+import cv2 as cv2
 import os
 import tkinter as tk
 from tkinter import filedialog
 
 image = None
-points_x = [40, 100]  # Your existing list of X coordinates
-points_y = [50, 599]  # Your existing list of Y coordinates
+points_x = [200]  # Your existing list of X coordinates
+points_y = [200]  # Your existing list of Y coordinates
 dragging = None
-offset_x = 0
-offset_y = 0
+draw = False
+ix, iy = -1, -1
+is_for_moving_point = False
+close_to_point = [3, 3]
+
 
 
 def change_dir_picture():
@@ -26,34 +29,34 @@ def change_dir_picture():
 def canny_edge_detection(img):
     """ Using the canny method to determine the lines of the object """
     # creating the edges (method 2)
-    edges = cv.Canny(img, 100, 200)
+    edges = cv2.Canny(img, 100, 200)
     print(edges)
     # printing the result
-    cv.imshow('image', img)
+    cv2.imshow('image', img)
 
-    cv.imshow('Edges', edges)
+    cv2.imshow('Edges', edges)
 
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 def threshold_obj_detection(img):
     """ Detecting the object with contour method and threshold """
-    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    ret, threshold = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    ret, threshold = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     threshold = 255 - threshold
 
-    contours, hierarchy = cv.findContours(threshold, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(threshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
     img_copy = img.copy()
-    cv.drawContours(img_copy, contours, -1, (0, 0, 255), 2)
-    cv.imshow('threshold', threshold)
+    cv2.drawContours(img_copy, contours, -1, (0, 0, 255), 2)
+    cv2.imshow('threshold', threshold)
 
     save_traced_img(img_copy)
 
-    cv.imshow('image', img_copy)
-    cv.waitKey(0)
+    cv2.imshow('image', img_copy)
+    cv2.waitKey(0)
 
 
 def save_traced_img(img_copy):
@@ -66,92 +69,80 @@ def save_traced_img(img_copy):
         os.chdir(rf'{os.getcwd()}' + '\\' + 'poze_generate')
         # print(os.getcwd())
 
-        cv.imwrite('image.jpg', img_copy)
+        cv2.imwrite('image.jpg', img_copy)
         # print(os.listdir())
 
     except os.getcwd() != r'C:\Users\mflor\Desktop\Licenta':
         print('The current working directory is not well defined!')
 
+def moved_the_point(x, y):
+    cv2.
 
-def load_image():
-    global image
-    file_path = filedialog.askopenfilename()
-    if file_path:
-        image = cv.imread(file_path)
+def get_coord(event, x, y, flags, param):
+    """Verify if the mouse is clicked and prints the position. Also prints the position for the moving mouse."""
+    global draw, ix, iy, is_for_moving_point
+
+    if event == cv2.EVENT_LBUTTONDOWN:
+        if (
+                (x + close_to_point[0] == points_x[0] or x - close_to_point[0] == points_x[0]) and
+                (y + close_to_point[0] == points_y[0] or y - close_to_point[0] == points_y[0])
+        ):
+            is_for_moving_point = True
+        print(f"clicked:{x}, {y}")
+        draw = True
+        ix, iy = x, y
+
+    elif event == cv2.EVENT_MOUSEMOVE:
+        if draw == True:
+            print(f"Clicked:{ix}, {iy}; {x}, {y}")
+
+    elif event == cv2.EVENT_LBUTTONUP:
+        draw = False
+        print(f"Last position: {x}, {y}")
+        if is_for_moving_point:
+            moved_the_point(x, y)
+        is_for_moving_point = False
+
+
+def clicked_at(event):
+    print(f"clicked:{event.x}, {event.y}")
 
 
 def draw_points():
+    global image
     if image is not None:
-        for x, y in zip(points_x, points_y):
-            cv.circle(image, (x, y), 5, (0, 0, 255), -1)
-        update_image()
+        image = cv2.circle(image, (points_x[0], points_y[0]), 1, (0, 0, 255), 2)
+        cv2.imshow("Image", image)
+
+    cv2.setMouseCallback("Image", get_coord)
 
 
-def update_image():
-    if image is not None:
-        cv.imshow("Image with Points", image)
-
-
-def save_image_with_points():
-    if image is not None:
-        for x, y in zip(points_x, points_y):
-            cv.circle(image, (x, y), 5, (0, 0, 255), -1)
-        file_path = filedialog.asksaveasfilename(defaultextension=".jpg")
-        if file_path:
-            cv.imwrite(file_path, image)
-
-
-def on_drag_start(event):
-    global dragging, offset_x, offset_y
-    if image is not None:
-        x, y = event.x, event.y
-        for i in range(len(points_x)):
-            px, py = points_x[i], points_y[i]
-            if abs(x - px) < 5 and abs(y - py) < 5:
-                dragging = i
-                offset_x = x - px
-                offset_y = y - py
-
-
-def on_drag(event):
-    if dragging is not None:
-        x, y = event.x, event.y
-        points_x[dragging] = x - offset_x
-        points_y[dragging] = y - offset_y
-        update_image()
-
-
-def on_drag_end(event):
-    global dragging
-    dragging = None
+def load_image():
+    """Loading the image from computer"""
+    global image
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        image = cv2.imread(file_path)
 
 
 def moving_points():
     root = tk.Tk()
-    root.title("Image Point Editor")
+    root.title("Image editor")
 
-    # Create GUI elements
-    load_button = tk.Button(root, text="Load Image", command=load_image)
+    # GUI elements
+    load_button = tk.Button(root, text="Load image", command=load_image)
     load_button.pack()
 
-    draw_button = tk.Button(root, text="Draw Points", command=draw_points)
+    draw_button = tk.Button(root, text="Draw", command=draw_points)
     draw_button.pack()
 
     canvas = tk.Canvas(root, width=800, height=600)
     canvas.pack()
-    canvas.bind("<ButtonPress-1>", on_drag_start)
-    canvas.bind("<B1-Motion>", on_drag)
-    canvas.bind("<ButtonRelease-1>", on_drag_end)
 
-    save_button = tk.Button(root, text="Save Image with Points", command=save_image_with_points)
-    save_button.pack()
+    #Click position in the upload image area not on img
+    # canvas.bind("<Button-1>", clicked_at)
 
-    # OpenCV window
-    cv.namedWindow("Image with Points", cv.WINDOW_NORMAL)
-
-    # Start the main loop
     root.mainloop()
-    cv.destroyAllWindows()
 
 
 def main():
