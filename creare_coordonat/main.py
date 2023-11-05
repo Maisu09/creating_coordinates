@@ -4,14 +4,11 @@ import tkinter as tk
 from tkinter import filedialog
 
 image = None
-points_x = [200]  # Your existing list of X coordinates
-points_y = [200]  # Your existing list of Y coordinates
+points = [(5, 5), (300, 300), (100, 100)]  # list of points that we move
 dragging = None
-draw = False
 ix, iy = -1, -1
 is_for_moving_point = False
-close_to_point = [3, 3]
-
+point_index = None
 
 
 def change_dir_picture():
@@ -75,46 +72,57 @@ def save_traced_img(img_copy):
     except os.getcwd() != r'C:\Users\mflor\Desktop\Licenta':
         print('The current working directory is not well defined!')
 
+
 def moved_the_point(x, y):
-    cv2.
-
-def get_coord(event, x, y, flags, param):
-    """Verify if the mouse is clicked and prints the position. Also prints the position for the moving mouse."""
-    global draw, ix, iy, is_for_moving_point
-
-    if event == cv2.EVENT_LBUTTONDOWN:
-        if (
-                (x + close_to_point[0] == points_x[0] or x - close_to_point[0] == points_x[0]) and
-                (y + close_to_point[0] == points_y[0] or y - close_to_point[0] == points_y[0])
-        ):
-            is_for_moving_point = True
-        print(f"clicked:{x}, {y}")
-        draw = True
-        ix, iy = x, y
-
-    elif event == cv2.EVENT_MOUSEMOVE:
-        if draw == True:
-            print(f"Clicked:{ix}, {iy}; {x}, {y}")
-
-    elif event == cv2.EVENT_LBUTTONUP:
-        draw = False
-        print(f"Last position: {x}, {y}")
-        if is_for_moving_point:
-            moved_the_point(x, y)
-        is_for_moving_point = False
+    pass
 
 
 def clicked_at(event):
     print(f"clicked:{event.x}, {event.y}")
 
 
-def draw_points():
+def draw_point():
+    print("o intrat in draw point")
+    global image, points
+    image_copy = image.copy()
+    print(image_copy)
+    for i, (x, y) in enumerate(points):
+        color = (255, 255, 0) if i == point_index else (4, 0, 255)
+        cv2.circle(image_copy, (x, y), 10, color, 2)
+        print(f"desenat cerc la coord x y: {x, y}")
+
+
+def get_coord(event, mouse_x, mouse_y, flags, param):
+    """Verify if the mouse is clicked and prints the position. Also prints the position for the moving mouse."""
+    global ix, iy, is_for_moving_point, point_index
+
+    if event == cv2.EVENT_LBUTTONDOWN:
+        is_for_moving_point = True
+        print(f"clicked:{mouse_x}, {mouse_y}")
+        for i, (x, y) in enumerate(points):
+            if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
+                point_index = i
+                print("e la point index:" + i)
+
+        ix, iy = mouse_x, mouse_y
+
+    elif event == cv2.EVENT_MOUSEMOVE and point_index is not None:
+        points[point_index] = (mouse_x, mouse_y)
+        print("mouse move eve")
+
+    elif event == cv2.EVENT_LBUTTONUP:
+        print(f"Last position: {mouse_x}, {mouse_y}")
+        point_index = None
+        is_for_moving_point = True
+
+    draw_point()
+
+
+def opened_image():
     global image
     if image is not None:
-        image = cv2.circle(image, (points_x[0], points_y[0]), 1, (0, 0, 255), 2)
         cv2.imshow("Image", image)
-
-    cv2.setMouseCallback("Image", get_coord)
+        cv2.setMouseCallback("Image", get_coord)
 
 
 def load_image():
@@ -133,14 +141,11 @@ def moving_points():
     load_button = tk.Button(root, text="Load image", command=load_image)
     load_button.pack()
 
-    draw_button = tk.Button(root, text="Draw", command=draw_points)
+    draw_button = tk.Button(root, text="Draw", command=opened_image)
     draw_button.pack()
 
     canvas = tk.Canvas(root, width=800, height=600)
     canvas.pack()
-
-    #Click position in the upload image area not on img
-    # canvas.bind("<Button-1>", clicked_at)
 
     root.mainloop()
 
