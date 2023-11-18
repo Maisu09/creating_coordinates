@@ -1,4 +1,6 @@
 import cv2
+import tkinter
+from tkinter import filedialog
 
 
 class DrawOnGivenImage:
@@ -9,16 +11,26 @@ class DrawOnGivenImage:
         self.points = points
         self.selected_points_index = None
         self.window_name = 'Move Points with Mouse'
+
+        root = tkinter.Tk()
+
         cv2.namedWindow(self.window_name)
         cv2.imshow(self.window_name, self.image)
         cv2.setMouseCallback(self.window_name, self.on_mouse_event)
-
-        while True:
-            key = cv2.waitKey(30)
-            if key == ord('q'):
-                break
-
+        add_button = tkinter.Button(root, text='Add Point', command=self.set_points_list_add)
+        add_button.pack()
+        save_button = tkinter.Button(root, text='Save', command=self.save_image)
+        save_button.pack()
+        root.mainloop()
         cv2.destroyAllWindows()
+
+    def set_points_list_add(self):
+        self.points.append((500, 500))
+
+    def save_image(self):
+        path = filedialog.asksaveasfilename(defaultextension=".jpg")
+        if path:
+            cv2.imwrite(path, self.image)
 
     def draw_points(self):
         image_copy = self.image.copy()

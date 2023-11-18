@@ -2,13 +2,16 @@ import cv2 as cv2
 import os
 import tkinter as tk
 from tkinter import filedialog
+from DrawOnGivenImage import DrawOnGivenImage
 
+# global variables
 image = None
 points = [(5, 5), (300, 300), (100, 100)]  # list of points that we move
 dragging = None
 ix, iy = -1, -1
 is_for_moving_point = False
 point_index = None
+file_path = ''
 
 
 def change_dir_picture():
@@ -73,61 +76,60 @@ def save_traced_img(img_copy):
         print('The current working directory is not well defined!')
 
 
-def moved_the_point(x, y):
-    pass
-
-
 def clicked_at(event):
     print(f"clicked:{event.x}, {event.y}")
 
 
-def draw_point():
-    print("o intrat in draw point")
-    global image, points
-    image_copy = image.copy()
-    print(image_copy)
-    for i, (x, y) in enumerate(points):
-        color = (255, 255, 0) if i == point_index else (4, 0, 255)
-        cv2.circle(image_copy, (x, y), 10, color, 2)
-        print(f"desenat cerc la coord x y: {x, y}")
+# def draw_point():
+#     print("o intrat in draw point")
+#     global image, points
+#     image_copy = image.copy()
+#     print(image_copy)
+#     for i, (x, y) in enumerate(points):
+#         color = (255, 255, 0) if i == point_index else (4, 0, 255)
+#         cv2.circle(image_copy, (x, y), 10, color, 2)
+#         print(f"desenat cerc la coord x y: {x, y}")
 
 
-def get_coord(event, mouse_x, mouse_y, flags, param):
-    """Verify if the mouse is clicked and prints the position. Also prints the position for the moving mouse."""
-    global ix, iy, is_for_moving_point, point_index
+# def get_coord(event, mouse_x, mouse_y, flags, param):
+#     """Verify if the mouse is clicked and prints the position. Also prints the position for the moving mouse."""
+#     global ix, iy, is_for_moving_point, point_index
+#
+#     if event == cv2.EVENT_LBUTTONDOWN:
+#         is_for_moving_point = True
+#         print(f"clicked:{mouse_x}, {mouse_y}")
+#         for i, (x, y) in enumerate(points):
+#             if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
+#                 point_index = i
+#                 print("e la point index:" + i)
+#
+#         ix, iy = mouse_x, mouse_y
+#
+#     elif event == cv2.EVENT_MOUSEMOVE and point_index is not None:
+#         points[point_index] = (mouse_x, mouse_y)
+#         print("mouse move eve")
+#
+#     elif event == cv2.EVENT_LBUTTONUP:
+#         print(f"Last position: {mouse_x}, {mouse_y}")
+#         point_index = None
+#         is_for_moving_point = True
+#
+#     draw_point()
 
-    if event == cv2.EVENT_LBUTTONDOWN:
-        is_for_moving_point = True
-        print(f"clicked:{mouse_x}, {mouse_y}")
-        for i, (x, y) in enumerate(points):
-            if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
-                point_index = i
-                print("e la point index:" + i)
 
-        ix, iy = mouse_x, mouse_y
-
-    elif event == cv2.EVENT_MOUSEMOVE and point_index is not None:
-        points[point_index] = (mouse_x, mouse_y)
-        print("mouse move eve")
-
-    elif event == cv2.EVENT_LBUTTONUP:
-        print(f"Last position: {mouse_x}, {mouse_y}")
-        point_index = None
-        is_for_moving_point = True
-
-    draw_point()
-
-
-def opened_image():
-    global image
+def points_drawing():
+    global image, file_path
     if image is not None:
-        cv2.imshow("Image", image)
-        cv2.setMouseCallback("Image", get_coord)
+        aa = DrawOnGivenImage([(200, 200), (300, 300), (100, 100)], file_path)
+        # while True:
+        #     key = cv2.waitKey(30)
+        #     if key == ord('q'):
+        #         break
 
 
 def load_image():
     """Loading the image from computer"""
-    global image
+    global image, file_path
     file_path = filedialog.askopenfilename()
     if file_path:
         image = cv2.imread(file_path)
@@ -141,7 +143,7 @@ def moving_points():
     load_button = tk.Button(root, text="Load image", command=load_image)
     load_button.pack()
 
-    draw_button = tk.Button(root, text="Draw", command=opened_image)
+    draw_button = tk.Button(root, text="Draw", command=points_drawing)
     draw_button.pack()
 
     canvas = tk.Canvas(root, width=800, height=600)
