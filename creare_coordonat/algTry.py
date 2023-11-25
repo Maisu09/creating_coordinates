@@ -499,8 +499,34 @@
 #         break
 #
 # cv2.destroyAllWindows()
+#
+# import cv2
+# import DrawOnGivenImage
 
-import cv2
-import DrawOnGivenImage
+# aa = DrawOnGivenImage.DrawOnGivenImage([(200, 200), (300, 300), (100, 100)] ,'C:\\Users\\mflor\\Desktop\\Licenta\\poze_initiale\\face1.jpg')
 
-aa = DrawOnGivenImage.DrawOnGivenImage([(200, 200), (300, 300), (100, 100)] ,'C:\\Users\\mflor\\Desktop\\Licenta\\poze_initiale\\face1.jpg')
+
+points = {
+    "p0": [200, 200],
+    "p1": [300, 300],
+    "p2": [100, 100],
+}
+letter = "p"
+i = 0
+points.update({"p0": [100, 200]})
+
+
+print(points.get(letter + str(i)))
+
+
+
+# for i, k in enumerate(points):
+#     # print(i)
+#     print(k)
+#     print(points.get(k))
+#     element_values = points.get(k)
+#     x = element_values[0]
+#     y = element_values[1]
+#     print(x, y)
+
+
