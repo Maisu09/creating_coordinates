@@ -1,0 +1,24 @@
+TODO:
+    --CREATE ENVIROMENT: Creare si structurare main()
+    $$Done$$
+
+TODO:
+    --INITIAL GUI: Creare gui din care se acceseaza functiile programului
+    $$DONE$$
+
+TODO:
+    --OPENING IMAGE: Functia din main gui care deschide imaginea
+    $$DONE$$
+
+TODO:
+    --MOVING POINTS ON IMAGE: Capacitate de a misca puncte pe imaginea deschisa 
+    $$DONE$$
+
+TODO:
+    --ADDING POINTS: GUI cu butoane pentru a adauga puncte noi si sa salvam imaginea
+    $$DONE$$
+
+TODO:
+    --DRAWING LINES: Crearea de linii intre puncte pe baza de ecuatii matematice (?Buton in GUI?)
+
+

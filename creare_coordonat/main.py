@@ -6,18 +6,17 @@ from DrawOnGivenImage import DrawOnGivenImage
 
 # global variables
 image = None
-points = [(5, 5), (300, 300), (100, 100)]  # list of points that we move
-dragging = None
-ix, iy = -1, -1
 is_for_moving_point = False
-point_index = None
 file_path = ''
+points = {
+    "p0": [200, 200],
+    "p1": [300, 300],
+    "p2": [100, 100],
+}
 
 
 def change_dir_picture():
     """ Changing wd to the directory where images are stored. """
-    # print(os.getcwd())
-
     os.chdir('..')
     # print(os.listdir())
 
@@ -71,7 +70,6 @@ def save_traced_img(img_copy):
 
         cv2.imwrite('image.jpg', img_copy)
         # print(os.listdir())
-
     except os.getcwd() != r'C:\Users\mflor\Desktop\Licenta':
         print('The current working directory is not well defined!')
 
@@ -80,51 +78,10 @@ def clicked_at(event):
     print(f"clicked:{event.x}, {event.y}")
 
 
-# def draw_point():
-#     print("o intrat in draw point")
-#     global image, points
-#     image_copy = image.copy()
-#     print(image_copy)
-#     for i, (x, y) in enumerate(points):
-#         color = (255, 255, 0) if i == point_index else (4, 0, 255)
-#         cv2.circle(image_copy, (x, y), 10, color, 2)
-#         print(f"desenat cerc la coord x y: {x, y}")
-
-
-# def get_coord(event, mouse_x, mouse_y, flags, param):
-#     """Verify if the mouse is clicked and prints the position. Also prints the position for the moving mouse."""
-#     global ix, iy, is_for_moving_point, point_index
-#
-#     if event == cv2.EVENT_LBUTTONDOWN:
-#         is_for_moving_point = True
-#         print(f"clicked:{mouse_x}, {mouse_y}")
-#         for i, (x, y) in enumerate(points):
-#             if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
-#                 point_index = i
-#                 print("e la point index:" + i)
-#
-#         ix, iy = mouse_x, mouse_y
-#
-#     elif event == cv2.EVENT_MOUSEMOVE and point_index is not None:
-#         points[point_index] = (mouse_x, mouse_y)
-#         print("mouse move eve")
-#
-#     elif event == cv2.EVENT_LBUTTONUP:
-#         print(f"Last position: {mouse_x}, {mouse_y}")
-#         point_index = None
-#         is_for_moving_point = True
-#
-#     draw_point()
-
-
 def points_drawing():
-    global image, file_path
+    global image, file_path, points
     if image is not None:
-        aa = DrawOnGivenImage([(200, 200), (300, 300), (100, 100)], file_path)
-        # while True:
-        #     key = cv2.waitKey(30)
-        #     if key == ord('q'):
-        #         break
+        aa = DrawOnGivenImage(points, file_path)
 
 
 def load_image():
@@ -153,14 +110,6 @@ def moving_points():
 
 
 def main():
-    # change_dir_picture()
-
-    # reading image
-    # img = cv.imread('unu.jpg')
-    # assert img is not None, "file could not be read, check with os.path.exists()"
-
-    # object detection and contour draw
-    # threshold_obj_detection(img)
     moving_points()
 
 
