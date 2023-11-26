@@ -1,6 +1,7 @@
 import cv2
 import tkinter
 from tkinter import filedialog
+from Contour import Contour
 
 
 class DrawOnGivenImage:
@@ -20,14 +21,27 @@ class DrawOnGivenImage:
 
         add_button = tkinter.Button(root, text='Add Point', command=self.set_points_list_add)
         add_button.pack()
+
+        polynom_button = tkinter.Button(root, text='Connect Points', command=self.connect_points)
+        polynom_button.pack()
+
         save_button = tkinter.Button(root, text='Save', command=self.save_image)
         save_button.pack()
 
         root.mainloop()
         cv2.destroyAllWindows()
 
+    def connect_points(self):
+        contour = Contour()
+        list_of_points = [self.points["p0"], self.points["p1"]]
+        contour.polynom_draw(list_of_points, self.image.copy(),self.window_name)
+
     def set_points_list_add(self):
-        pass
+        position = len(self.points)
+        new_key = "p" + str(position)
+        self.points[new_key] = [500, 500]
+
+        # self.points.update({new_key: [500, 500]})
         # self.points.append((500, 500))
 
     def save_image(self):
@@ -61,6 +75,11 @@ class DrawOnGivenImage:
 
         elif event == cv2.EVENT_LBUTTONUP:
             self.selected_point_index = None
+
+            # verificare modificare puncte in dict
+            # for i, key in enumerate(self.points):
+            #     print(key, self.points.get(key))
+            # print('\n')
 
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
             key = "p" + str(self.selected_point_index)
