@@ -506,19 +506,19 @@
 # aa = DrawOnGivenImage.DrawOnGivenImage([(200, 200), (300, 300), (100, 100)] ,'C:\\Users\\mflor\\Desktop\\Licenta\\poze_initiale\\face1.jpg')
 
 
-points = {
-    "p0": [200, 200],
-    "p1": [300, 300],
-    "p2": [100, 100],
-}
-letter = "p"
-i = 0
-points.update({"p0": [100, 200]})
-
-
-print(points.get(letter + str(i)))
-
-
+# points = {
+#     "p0": [200, 200],
+#     "p1": [300, 300],
+#     "p2": [100, 100],
+# }
+# letter = "p"
+# i = 0
+# points.update({"p0": [100, 200]})
+#
+#
+# print(points.get(letter + str(i)))
+#
+#
 
 # for i, k in enumerate(points):
 #     # print(i)
@@ -528,5 +528,45 @@ print(points.get(letter + str(i)))
 #     x = element_values[0]
 #     y = element_values[1]
 #     print(x, y)
+
+import numpy as np
+import cv2
+
+# Define the coefficients of the third-degree equation (ax^3 + bx^2 + cx + d)
+a, b, c, d = 1, -6, 11, -6  # Replace these with your coefficients
+
+# Define the starting and ending points for the plot
+start_point = -2
+end_point = 4
+
+# Generate x values between the starting and ending points
+x_values = np.linspace(start_point, end_point, 1000)
+
+# Calculate corresponding y values using the third-degree equation
+y_values = a * x_values**3 + b * x_values**2 + c * x_values + d
+
+# Normalize the y values to fit within the image height
+y_values_normalized = (y_values - np.min(y_values)) / (np.max(y_values) - np.min(y_values))
+
+# Create an image to plot the equation
+img_height = 400
+img_width = 600
+img = np.ones((img_height, img_width, 3), dtype=np.uint8) * 255  # White background
+
+# Scale and shift x values to fit within the image width
+x_values_scaled = ((x_values - start_point) / (end_point - start_point)) * (img_width - 1)
+
+# Scale and shift y values to fit within the image height
+y_values_scaled = ((1 - y_values_normalized) * (img_height - 1)).astype(int)
+
+# Plot the points on the image
+for x, y in zip(x_values_scaled, y_values_scaled):
+    cv2.circle(img, (int(x), int(y)), 2, (0, 0, 0), -1)  # Draw a black circle
+
+# Show the image with the plotted equation
+cv2.imshow('Equation Plot', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
 
 
