@@ -20,5 +20,8 @@ TODO:
 
 TODO:
     --DRAWING LINES: Crearea de linii intre puncte pe baza de ecuatii matematice (?Buton in GUI?)
-
+                     Opencv nu accepta floating point precision doar integer. Metoda de a face floating point
+                     este sa folosesc ca si editor matplotlib pentru partea de generarea finala a punctelor
+                     dintre puncte. Astfel pot sa salvez intr-un fisier imaginea cu punctele mutate de mana din opencv
+                     si sa o deschid si sa generez punctele(linii si polinome) intre liniile acelea
 

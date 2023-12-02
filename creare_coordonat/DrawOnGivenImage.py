@@ -2,6 +2,7 @@ import cv2
 import tkinter
 from tkinter import filedialog
 from Contour import Contour
+from SysManipulation import SysManipulation
 
 
 class DrawOnGivenImage:
@@ -25,16 +26,18 @@ class DrawOnGivenImage:
         polynom_button = tkinter.Button(root, text='Connect Points', command=self.connect_points)
         polynom_button.pack()
 
-        save_button = tkinter.Button(root, text='Save', command=self.save_image)
-        save_button.pack()
+        save_choose_button = tkinter.Button(root, text='Save In Different Directory', command=self.save_image)
+        save_choose_button.pack()
+
+        save_automate_button = tkinter.Button(root, text='Auto-save', command=self.automation_save)
+        save_automate_button.pack()
 
         root.mainloop()
         cv2.destroyAllWindows()
 
     def connect_points(self):
-        contour = Contour()
-        list_of_points = [self.points["p0"], self.points["p1"]]
-        contour.polynom_draw(list_of_points, self.image.copy(),self.window_name)
+        contour = Contour(self.image)
+        contour.polynom_draw(self.points,  self.window_name)
 
     def set_points_list_add(self):
         position = len(self.points)
@@ -44,10 +47,28 @@ class DrawOnGivenImage:
         # self.points.update({new_key: [500, 500]})
         # self.points.append((500, 500))
 
+    def update_image(self):
+        for i, k in enumerate(self.points):
+            values_of_dict = self.points.get(k)
+            x = values_of_dict[0]
+            y = values_of_dict[1]
+
+            color = (255, 0, 0) if i == self.selected_point_index else (0, 255, 0)
+            cv2.circle(self.image, (x, y), 10, color, -1)
+
+    def automation_save(self):
+        self.update_image()
+        sys_manipulation = SysManipulation()
+        sys_manipulation.change_dir_picture()
+        sys_manipulation.save_traced_img(self.image, False)
+
     def save_image(self):
+        self.update_image()
         path = filedialog.asksaveasfilename(defaultextension=".jpg")
         if path:
             cv2.imwrite(path, self.image)
+
+        self.automation_save()
 
     def draw_points(self):
         image_copy = self.image.copy()
