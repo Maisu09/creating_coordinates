@@ -533,40 +533,131 @@ import numpy as np
 import cv2
 
 # Define the coefficients of the third-degree equation (ax^3 + bx^2 + cx + d)
-a, b, c, d = 1, -6, 11, -6  # Replace these with your coefficients
-
-# Define the starting and ending points for the plot
-start_point = -2
-end_point = 4
-
-# Generate x values between the starting and ending points
-x_values = np.linspace(start_point, end_point, 1000)
-
-# Calculate corresponding y values using the third-degree equation
-y_values = a * x_values**3 + b * x_values**2 + c * x_values + d
-
-# Normalize the y values to fit within the image height
-y_values_normalized = (y_values - np.min(y_values)) / (np.max(y_values) - np.min(y_values))
-
+# a, b, c, d = 1, -6, 11, -6  # Replace these with your coefficients
+#
+# # Define the starting and ending points for the plot
+# start_point = -2
+# end_point = 4
+#
+# # Generate x values between the starting and ending points
+# x_values = np.linspace(start_point, end_point, 1000)
+#
+# # Calculate corresponding y values using the third-degree equation
+# y_values = a * x_values**3 + b * x_values**2 + c * x_values + d
+#
+# # Normalize the y values to fit within the image height
+# y_values_normalized = (y_values - np.min(y_values)) / (np.max(y_values) - np.min(y_values))
+#
 # Create an image to plot the equation
-img_height = 400
-img_width = 600
-img = np.ones((img_height, img_width, 3), dtype=np.uint8) * 255  # White background
+# img_height = 400
+# img_width = 600
+# img = np.ones((img_height, img_width, 3), dtype=np.uint8) * 255  # White background
+#
+# # Scale and shift x values to fit within the image width
+# x_values_scaled = ((x_values - start_point) / (end_point - start_point)) * (img_width - 1)
+#
+# # Scale and shift y values to fit within the image height
+# y_values_scaled = ((1 - y_values_normalized) * (img_height - 1)).astype(int)
+#
+# # Plot the points on the image
+# for x, y in zip(x_values_scaled, y_values_scaled):
+#     cv2.circle(img, (int(x), int(y)), 2, (0, 0, 0), -1)  # Draw a black circle
 
-# Scale and shift x values to fit within the image width
-x_values_scaled = ((x_values - start_point) / (end_point - start_point)) * (img_width - 1)
+# points = {
+#     'p1': [10, 10],
+#     'p2': [200, 200]
+# }
+#
+# list_of_polynomial_points = []
+#
+# for i in range(0, 100, 1):
+#     i = i / 100
+#
+#     x_p1 = points.get('p1')
+#     x_p1 = x_p1[0]
+#     x_p2 = points.get('p2')
+#     x_p2 = x_p2[0]
+#     x = x_p1 + (x_p2 - x_p1)*i
+#
+#     y_p1 = points.get('p1')
+#     y_p1 = y_p1[1]
+#     y_p2 = points.get('p2')
+#     y_p2 = y_p2[1]
+#     y = y_p1 + (y_p2 - y_p1) * i
+#     tuple_list = (int(x), int(y))
+#
+#     list_of_polynomial_points.append(tuple_list)
+#
+# cv2.polylines(img, [np.array(list_of_polynomial_points, dtype=np.int32)], isClosed=False, color=(0, 0, 0), thickness=1)
+#
+#
+# # Show the image with the plotted equation
+# cv2.imshow('Equation Plot', img)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
-# Scale and shift y values to fit within the image height
-y_values_scaled = ((1 - y_values_normalized) * (img_height - 1)).astype(int)
 
-# Plot the points on the image
-for x, y in zip(x_values_scaled, y_values_scaled):
-    cv2.circle(img, (int(x), int(y)), 2, (0, 0, 0), -1)  # Draw a black circle
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+#
+# # Create a black image using OpenCV
+# img = np.zeros((300, 300, 3), dtype=np.uint8)
+#
+# # Open the image using OpenCV (you can replace this with your image loading code)
+# # img = cv2.imread('your_image.jpg')
+#
+# # Define points with floating-point precision
+# points = {
+#     'p1': [10.5, 10.7],
+#     'p2': [20.8, 20.2]
+# }
+#
+# # Convert the image from BGR to RGB (Matplotlib uses RGB)
+# img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#
+# # Plot the line using Matplotlib
+# plt.plot([points['p1'][0], points['p2'][0]], [points['p1'][1], points['p2'][1]], color='red')
+#
+# # Display the image with the overlaid line
+# plt.imshow(img_rgb)
+# plt.title('Line with Floating Point Precision')
+# plt.show()
 
-# Show the image with the plotted equation
-cv2.imshow('Equation Plot', img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 
+# Create a black image using OpenCV
+img = np.zeros((300, 300, 3), dtype=np.uint8)
 
+# Define points with floating-point precision
+points = {
+    'p1': [10.0, 10.0],
+    'p2': [200.0, 200.0]
+}
+
+list_of_polynomial_points = []
+x_p1, y_p1 = points['p1']
+x_p2, y_p2 = points['p2']
+for i in range(0, 100, 1):
+    i = i / 100
+
+    x = x_p1 + (x_p2 - x_p1) * i
+    y = y_p1 + (y_p2 - y_p1) * i
+
+    tuple_point = (x, y)
+    list_of_polynomial_points.append(tuple_point)
+
+# Convert the image from BGR to RGB (Matplotlib uses RGB)
+img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+# Plot the line using Matplotlib
+# scatter - ploteaza ca si puncte - line ca plot ca si linie
+plt.plot([p[0] for p in list_of_polynomial_points], [p[1] for p in list_of_polynomial_points], color='red')
+
+# Display the image with the overlaid line
+plt.imshow(img_rgb)
+plt.title('Line with Floating Point Precision')
+plt.show()

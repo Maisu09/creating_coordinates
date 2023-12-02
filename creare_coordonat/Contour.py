@@ -1,29 +1,29 @@
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 
 class Contour:
-    def __init__(self):
-        # self.number = [4, 3, 2, 1] #4x**3+3x**2+2x+1
-        self.polynom = []
-        self.m = 0
+    def __init__(self, image):
+        self.image = image
 
-    @staticmethod
-    def gradient(distance):
-        """Realizeaza panta ecuatiei bazate pe cele doua puncte."""
-        return (distance[0][0] + distance[1][0]) / (distance[0][1] + distance[1][1])
-
-    def polynom_draw(self, two_given_points: list, image_copy, window_name):
+    def polynom_draw(self, points: dict, window_name):
         """Primeste doua puncte din dictionar si creaza linia."""
-        if two_given_points[0][0] > two_given_points[1][0]:
-            two_given_points.reverse()
-        self.m = self.gradient(two_given_points)
+        list_of_polynomial_points = []
+        x_p1, y_p1 = points['p1']
+        x_p2, y_p2 = points['p2']
 
-        x_values = np.linspace(two_given_points[0][0], two_given_points[1][0])
+        for i in range(0, 100, 1):
+            i = i / 100
 
-        y_values = 3 * x_values + 5
+            x = x_p1 + (x_p2 - x_p1) * i
+            y = y_p1 + (y_p2 - y_p1) * i
 
-        for x, y in zip(x_values, y_values):
-            if x < two_given_points[1][0]:
-                cv2.circle(image_copy, (x, y), 2, (0, 255, 0))
-        cv2.imshow(window_name, image_copy)
+            tuple_point = (x, y)
+            list_of_polynomial_points.append(tuple_point)
+
+        image_rgb = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+        plt.scatter([p[0] for p in list_of_polynomial_points], [p[1] for p in list_of_polynomial_points], color='red')
+        plt.imshow(image_rgb)
+        plt.title(window_name)
+        plt.show()
