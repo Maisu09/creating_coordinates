@@ -42,7 +42,7 @@ class DrawOnGivenImage:
     def set_points_list_add(self):
         position = len(self.__points)
         new_key = "p" + str(position)
-        self.__points[new_key] = [500, 500]
+        self.__points[new_key] = [500, 500, self.__points["p" + str(position - 1)][2] + 100]
 
         # self.points.update({new_key: [500, 500]})
         # self.points.append((500, 500))
@@ -57,6 +57,7 @@ class DrawOnGivenImage:
             cv2.circle(self.__image, (x, y), 10, color, -1)
 
     def automation_save(self):
+        """A one click solution saving and generating the line."""
         self.update_image()
         sys_manipulation = SysManipulation()
         sys_manipulation.change_dir_picture()
@@ -104,6 +105,7 @@ class DrawOnGivenImage:
 
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
             key = "p" + str(self.selected_point_index)
-            self.__points.update({key: (mouse_x, mouse_y)})
+            time = self.__points.get(key)[2]
+            self.__points.update({key: (mouse_x, mouse_y, time)})
 
         self.draw_points()
