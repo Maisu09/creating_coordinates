@@ -9,53 +9,10 @@ image = None
 is_for_moving_point = False
 file_path = ''
 points = {
-    "p0": [200, 200],
-    "p1": [300, 300],
-    "p2": [100, 100],
+    "p0": [200, 200, 0],
+    "p1": [300, 300, 100],
+    "p2": [100, 100, 200],
 }
-
-
-def change_dir_picture():
-    """ Changing wd to the directory where images are stored. """
-    os.chdir('..')
-    # print(os.listdir())
-
-    os.chdir(rf'{os.getcwd()}' + '\\' + 'poze_initiale')
-    # print(os.getcwd())
-    # print(os.listdir())
-
-
-def canny_edge_detection(img):
-    """ Using the canny method to determine the lines of the object """
-    # creating the edges (method 2)
-    edges = cv2.Canny(img, 100, 200)
-    print(edges)
-    # printing the result
-    cv2.imshow('image', img)
-
-    cv2.imshow('Edges', edges)
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-def threshold_obj_detection(img):
-    """ Detecting the object with contour method and threshold """
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    ret, threshold = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    threshold = 255 - threshold
-
-    contours, hierarchy = cv2.findContours(threshold, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-    img_copy = img.copy()
-    cv2.drawContours(img_copy, contours, -1, (0, 0, 255), 2)
-    cv2.imshow('threshold', threshold)
-
-    save_traced_img(img_copy)
-
-    cv2.imshow('image', img_copy)
-    cv2.waitKey(0)
 
 
 def save_traced_img(img_copy):

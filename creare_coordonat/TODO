@@ -24,4 +24,7 @@ TODO:
                      este sa folosesc ca si editor matplotlib pentru partea de generarea finala a punctelor
                      dintre puncte. Astfel pot sa salvez intr-un fisier imaginea cu punctele mutate de mana din opencv
                      si sa o deschid si sa generez punctele(linii si polinome) intre liniile acelea
+        $DONE$ - Traseaza linii pe imagine. Nu am facut partea de salvat in fisier si sa se ia automat
 
+TODO:
+    --PLOT XY,TX,TY,VT,AT: Vizualizare pe grafice modu in care variaza viteza pe axe in functie de timp
