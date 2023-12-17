@@ -27,4 +27,8 @@ TODO:
         $DONE$ - Traseaza linii pe imagine. Nu am facut partea de salvat in fisier si sa se ia automat
 
 TODO:
+    --SECOND FACE: Pe a doua fata trebuie sa se creeze cate un punct de fiecare data cand se creaza pe prima si cand miscam
+                   in prima sa se miste si in a doua, dar sa poata fi miscate si independent de prima.
+
+TODO:
     --PLOT XY,TX,TY,VT,AT: Vizualizare pe grafice modu in care variaza viteza pe axe in functie de timp
