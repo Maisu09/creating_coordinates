@@ -2,12 +2,15 @@ import cv2 as cv2
 import os
 import tkinter as tk
 from tkinter import filedialog
-from DrawOnGivenImage import DrawOnGivenImage
+from FirstFace import FirstFace
+from SecondFace import SecondFace
 
 # global variables
-image = None
+image1 = None
+image2 = None
 is_for_moving_point = False
-file_path = ''
+file_path1 = ''
+file_path2 = ''
 points = {
     "p0": [200, 200, 0],
     "p1": [300, 300, 100],
@@ -36,26 +39,40 @@ def clicked_at(event):
 
 
 def points_drawing():
-    global image, file_path, points
-    if image is not None:
-        aa = DrawOnGivenImage(points, file_path)
+    global image1, file_path1, points, image2, file_path2
+    if image1 is not None:
+        aa = FirstFace(points, file_path1)
 
 
-def load_image():
+def load_image1():
     """Loading the image from computer"""
-    global image, file_path
-    file_path = filedialog.askopenfilename()
-    if file_path:
-        image = cv2.imread(file_path)
+    global image1, file_path1
+
+    file_path1 = filedialog.askopenfilename()
+    if file_path1:
+        image1 = cv2.imread(file_path1)
+
+
+def load_image2():
+    """Loading the image from computer"""
+    global image2, file_path2
+
+    file_path2 = filedialog.askopenfilename()
+    if file_path2:
+        image2 = cv2.imread(file_path2)
 
 
 def moving_points():
+    global b
     root = tk.Tk()
     root.title("Image editor")
 
     # GUI elements
-    load_button = tk.Button(root, text="Load image", command=load_image)
-    load_button.pack()
+    load_button1 = tk.Button(root, text="Load image1", command=load_image1)
+    load_button1.pack()
+
+    load_button2 = tk.Button(root, text="Load image2", command=load_image2)
+    load_button2.pack()
 
     draw_button = tk.Button(root, text="Draw", command=points_drawing)
     draw_button.pack()

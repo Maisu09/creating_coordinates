@@ -3,9 +3,10 @@ import tkinter
 from tkinter import filedialog
 from Contour import Contour
 from SysManipulation import SysManipulation
+from SecondFace import SecondFace
 
 
-class DrawOnGivenImage:
+class FirstFace:
     selected_point_index = None
 
     def __init__(self, points: dict, path):
@@ -43,9 +44,6 @@ class DrawOnGivenImage:
         position = len(self.__points)
         new_key = "p" + str(position)
         self.__points[new_key] = [500, 500, self.__points["p" + str(position - 1)][2] + 100]
-
-        # self.points.update({new_key: [500, 500]})
-        # self.points.append((500, 500))
 
     def update_image(self):
         for i, k in enumerate(self.__points):
