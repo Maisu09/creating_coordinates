@@ -7,18 +7,18 @@ import matplotlib.pyplot as plt
 
 class Contour:
     def __init__(self, image, points: dict):
-        self.__image = image
-        self.__points = points
-        self.__speed = [0]
+        self._image = image
+        self._points = points
+        self._speed = [0]
 
     def polynom_draw(self, window_name):
         """Primeste data puncte din dictionar si creaza linia."""
         list_of_polynomial_points = []
 
-        for j in range(len(self.__points) - 1):
+        for j in range(len(self._points) - 1):
 
-            x_p1, y_p1, t_p1 = self.__points['p' + str(j)]
-            x_p2, y_p2, t_p2 = self.__points['p' + str(j + 1)]
+            x_p1, y_p1, t_p1 = self._points['p' + str(j)]
+            x_p2, y_p2, t_p2 = self._points['p' + str(j + 1)]
 
             # print(x_p1, y_p1, x_p2, y_p2, j)
 
@@ -30,7 +30,7 @@ class Contour:
                 t = t_p1 + (t_p2 - t_p1) * i
                 # print(x, y, t)
                 tuple_point = (x, y, t)
-                # cv2.circle(self.__image,
+                # cv2.circle(self._image,
                 #            (round(tuple_point[0]), (round(tuple_point[1]))),
                 #            2, [255, 0, 0], -1
                 #            )
@@ -46,10 +46,10 @@ class Contour:
                 (list_of_points[i][0] - list_of_points[i + 1][0]) / (list_of_points[i][2] - list_of_points[i + 1][2]))
             speed_y = float(
                 (list_of_points[i][1] - list_of_points[i + 1][1]) / (list_of_points[i][2] - list_of_points[i + 1][2]))
-            self.__speed.append(math.sqrt(speed_x ** 2 + speed_y ** 2))
+            self._speed.append(math.sqrt(speed_x ** 2 + speed_y ** 2))
 
     def plotting(self, list_of_polynomial_points):
-        image_rgb = cv2.cvtColor(self.__image, cv2.COLOR_BGR2RGB)
+        image_rgb = cv2.cvtColor(self._image, cv2.COLOR_BGR2RGB)
 
         # plot x si y
         plt.scatter([p[0] for p in list_of_polynomial_points], [p[1] for p in list_of_polynomial_points], color='red')
@@ -70,7 +70,7 @@ class Contour:
         plt.show()
 
         # plot v si t
-        plt.scatter([p[2] for p in list_of_polynomial_points], [p for p in self.__speed], color='red')
+        plt.scatter([p[2] for p in list_of_polynomial_points], [p for p in self._speed], color='red')
         plt.imshow(image_rgb)
 
         plt.title("t si v")
