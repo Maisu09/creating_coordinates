@@ -1,9 +1,12 @@
-import cv2 as cv2
 import os
 import tkinter as tk
 from tkinter import filedialog
-from FirstFace import FirstFace
-from SecondFace import SecondFace
+
+import cv2 as cv2
+
+from Face import Face
+from ImageManipulation import ImageManipulation
+from Image_manipulation import Image_manipulation
 
 # global variables
 image1 = None
@@ -41,7 +44,8 @@ def clicked_at(event):
 def points_drawing():
     global image1, file_path1, points, image2, file_path2
     if image1 is not None:
-        aa = FirstFace(points, file_path1)
+        # image_manipulation = ImageManipulation(points, file_path1, image1, file_path2, image2)
+        image_man = Image_manipulation(points, file_path1, image1, file_path2, image2)
 
 
 def load_image1():
@@ -63,7 +67,7 @@ def load_image2():
 
 
 def moving_points():
-    global b
+    global file_path2, file_path1, image1, image2
     root = tk.Tk()
     root.title("Image editor")
 
@@ -76,6 +80,7 @@ def moving_points():
 
     draw_button = tk.Button(root, text="Draw", command=points_drawing)
     draw_button.pack()
+    print(file_path1)
 
     canvas = tk.Canvas(root, width=800, height=600)
     canvas.pack()
