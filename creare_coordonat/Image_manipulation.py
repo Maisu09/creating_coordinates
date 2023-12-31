@@ -12,7 +12,7 @@ class Image_manipulation:
         self.selected_point_index = None
         self.update_only_second = False
         self._points1 = points1
-        self._points2 = points2
+        self._points2 = self._points1.copy()
         self._face_one = Face(file_path1, image1, 'First face')
         self._face_two = Face(file_path2, image2, 'Second face')
         root = tkinter.Tk()
@@ -29,13 +29,16 @@ class Image_manipulation:
         if self.update_only_second is False:
             for i, k in enumerate(self._points1):
                 values_of_dict = self._points1.get(k)
-                x = values_of_dict[0]
-                y = values_of_dict[1]
+                x_p1 = values_of_dict[0]
+                y_p1 = values_of_dict[1]
 
+                values_of_dict = self._points2.get(k)
+                x_p2 = values_of_dict[0]
+                y_p2 = values_of_dict[1]
                 color = (255, 0, 0) if i == self.selected_point_index else (0, 255, 0)
 
-                cv2.circle(image_copy[0], (x, y), 10, color, -1)
-                cv2.circle(image_copy[1], (x, y), 10, color, -1)
+                cv2.circle(image_copy[0], (x_p1, y_p1), 10, color, -1)
+                cv2.circle(image_copy[1], (x_p2, y_p2), 10, color, -1)
 
             cv2.imshow(self._face_one.window_name, image_copy[0])
             cv2.imshow(self._face_two.window_name, image_copy[1])
@@ -55,7 +58,6 @@ class Image_manipulation:
     def draw_points(self):
         image1_copy = self._face_one.image.copy()
         image2_copy = self._face_two.image.copy()
-        # print(param)
         self.draw_function(image1_copy, image2_copy)
 
     def update_points(self, mouse_x, mouse_y, point):
@@ -74,16 +76,15 @@ class Image_manipulation:
                 break
 
     def on_mouse_event(self, event, mouse_x, mouse_y, flags, param, selected_point_index=None):
-        if event == cv2.EVENT_LBUTTONDOWN:
-            if param == self._face_one.window_name:
-                self.verify_button_down(mouse_x, mouse_y, self._points1)
-                print("primul")
-                self.update_only_second = False
+        if event == cv2.EVENT_LBUTTONDOWN and param == self._face_one.window_name:
+            self.verify_button_down(mouse_x, mouse_y, self._points1)
+            print("primul")
+            self.update_only_second = False
 
-            elif param == self._face_two.window_name:
-                self.verify_button_down(mouse_x, mouse_y, self._points2)
-                print("al doilea")
-                self.update_only_second = True
+        elif event == cv2.EVENT_LBUTTONDOWN and param == self._face_two.window_name:
+            self.verify_button_down(mouse_x, mouse_y, self._points2)
+            print("al doilea")
+            self.update_only_second = True
 
             # for i, k in enumerate(self._points1):
             #     # print(param)
@@ -105,13 +106,11 @@ class Image_manipulation:
             print('\n')
 
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
-            # print(self._points1)
             if self.update_only_second is False:
                 self.update_points(mouse_x, mouse_y, self._points1)
-                self.update_points(mouse_x, mouse_y, self._points2)
+                self._points2 = self._points1.copy()  # Use copy to create a new dictionary
+
             elif self.update_only_second:
                 self.update_points(mouse_x, mouse_y, self._points2)
-            # key = "p" + str(self.selected_point_index)
-            # time = self._points1.get(key)[2]
-            # self._points1.update({key: (mouse_x, mouse_y, time)})
+
         self.draw_points()
