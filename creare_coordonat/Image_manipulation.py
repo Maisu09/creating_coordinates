@@ -25,6 +25,21 @@ class Image_manipulation:
         # -- pot muta si in a doua punctele (!! problema muta si in prima !!) --
         cv2.setMouseCallback(self._face_two.window_name, self.on_mouse_event, self._face_two.window_name)
 
+        add_point_button = tkinter.Button(root, text='Add point', command=self.add_point)
+        add_point_button.pack()
+        polynom_button = tkinter.Button(root, text='Connect Points', command=self.connect_points)
+        polynom_button.pack()
+
+    def connect_points(self):
+        contour = Contour(self._face_one, self._points1, self._face_two, self._points2)
+        contour.polynom_draw()
+
+    def add_point(self):
+        position = len(self._points1)
+        new_key = 'p' + str(position)
+        self._points1[new_key] = [500, 500, self._points1['p' + str(position - 1)][2] + 100]
+        self._points2 = self._points1.copy()
+
     def draw_function(self, *image_copy):
         if self.update_only_second is False:
             for i, k in enumerate(self._points1):
@@ -108,7 +123,7 @@ class Image_manipulation:
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
             if self.update_only_second is False:
                 self.update_points(mouse_x, mouse_y, self._points1)
-                self._points2 = self._points1.copy()  # Use copy to create a new dictionary
+                self._points2 = self._points1.copy()
 
             elif self.update_only_second:
                 self.update_points(mouse_x, mouse_y, self._points2)
