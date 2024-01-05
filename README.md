@@ -8,7 +8,7 @@ the necessary trajectories and speeds.
 --------------------------------------
 
 Getting the points:
-  - The points will be added trough a GUI using a button, and they will be moved on the required position by mouse.
+  - The points will be added trough a GUI using a button, and they will be moved on the required position (the countour of the faces) by mouse.
   - To be able to cut into more different shapes we will have the points generated on both the front and the back of the image at the same time, and we can modify the points on the images independently.
 
 ---------------------------------------
