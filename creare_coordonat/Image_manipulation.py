@@ -20,9 +20,8 @@ class Image_manipulation:
         cv2.namedWindow(self._face_one.window_name)
         cv2.imshow(self._face_one.window_name, self._face_one.image)
         cv2.imshow(self._face_two.window_name, self._face_two.image)
-        cv2.setMouseCallback(self._face_one.window_name, self.on_mouse_event, self._face_one.window_name)
 
-        # -- pot muta si in a doua punctele (!! problema muta si in prima !!) --
+        cv2.setMouseCallback(self._face_one.window_name, self.on_mouse_event, self._face_one.window_name)
         cv2.setMouseCallback(self._face_two.window_name, self.on_mouse_event, self._face_two.window_name)
 
         add_point_button = tkinter.Button(root, text='Add point', command=self.add_point)
@@ -73,6 +72,7 @@ class Image_manipulation:
     def draw_points(self):
         image1_copy = self._face_one.image.copy()
         image2_copy = self._face_two.image.copy()
+        # self.draw_function(self._face_one.image, self._face_two.image)
         self.draw_function(image1_copy, image2_copy)
 
     def update_points(self, mouse_x, mouse_y, point):
