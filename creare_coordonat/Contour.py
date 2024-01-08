@@ -21,8 +21,6 @@ class Contour:
             x_p1, y_p1, t_p1 = points['p' + str(j)]
             x_p2, y_p2, t_p2 = points['p' + str(j + 1)]
 
-            # print(x_p1, y_p1, x_p2, y_p2, j)
-
             for i in range(0, 100, 1):
                 i = i / 100
 
