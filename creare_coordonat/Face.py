@@ -1,5 +1,6 @@
 class Face:
-    def __init__(self, filepath='', image='', window_name=''):
+    def __init__(self, filepath='', image='', window_name='', points=None):
+        self._points = points if points is not None else {}
         self._filepath = filepath
         self._image = image
         self._window_name = window_name
@@ -27,3 +28,11 @@ class Face:
     @window_name.setter
     def window_name(self, window_name):
         self._window_name = window_name
+
+    @property
+    def points(self):
+        return self._points
+
+    @points.setter
+    def points(self, points):
+        self._points = points
