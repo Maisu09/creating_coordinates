@@ -31,5 +31,13 @@ TODO:
                      -- (Problema intalnita= modificare cand modific face 2 se modifica si face1. Rezolvare -- creare a unei deepcopy pentru puncte2 fata de puncte1 pentru a separa adresele de memorie pentru implementare.)
                      $$DONE$$
                    Pe a doua fata trebuie sa se creeze cate un punct de fiecare data cand se creaza pe prima
+                     $$DONE$$
+
+TODO:
+    -- TWO MORE IMAGES: Cele doua fete initiale reprezinta cele doua capete ale piesei. Se mai creaza inca doua fete care sa reprezinte spatiul de unde porneste si unde se opreste motorul
+                        Acestea decaleaza puntele de pe pozele initiale mai sus unde porneste motorul si mai jos unde ajunge motorul. Distanta dintre plane(start, prima poza, a doua poza,
+                        stop) se considera a cate 50 de mm.
+
+
 TODO:
     --PLOT XY,TX,TY,VT,AT: Vizualizare pe grafice modu in care variaza viteza pe axe in functie de timp

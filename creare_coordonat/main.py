@@ -5,8 +5,8 @@ from tkinter import filedialog
 import cv2 as cv2
 
 from Face import Face
+from ImageManipulationold import ImageManipulation
 from ImageManipulation import ImageManipulation
-from Image_manipulation import Image_manipulation
 
 # global variables
 image1 = None
@@ -19,7 +19,7 @@ points1 = {
     "p1": [300, 300, 100],
     "p2": [100, 100, 200],
 }
-points2 = points1
+points2 = points1.copy()
 
 
 def save_traced_img(img_copy):
@@ -46,7 +46,7 @@ def points_drawing():
     global image1, file_path1, points1, image2, file_path2, points2
     if image1 is not None:
         # image_manipulation = ImageManipulation(points, file_path1, image1, file_path2, image2)
-        image_man = Image_manipulation(points1, file_path1, image1, file_path2, image2, points2)
+        image_man = ImageManipulation(points1, file_path1, image1, file_path2, image2)
 
 
 def load_image1():
