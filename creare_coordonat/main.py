@@ -5,7 +5,7 @@ from tkinter import filedialog
 import cv2 as cv2
 
 from Face import Face
-from ImageManipulationold import ImageManipulation
+# from ImageManipulationOLD import ImageManipulation
 from ImageManipulation import ImageManipulation
 
 # global variables
