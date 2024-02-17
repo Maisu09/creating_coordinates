@@ -35,7 +35,7 @@ class ImageManipulation:
         polynom_button.pack()
 
     def connect_points(self):
-        contour = Contour(self._face_one, self._face_one.points, self._face_two, self._face_two.points)
+        contour = Contour(self._face_one, self._face_two)
         contour.polynom_draw()
 
     def add_point(self):

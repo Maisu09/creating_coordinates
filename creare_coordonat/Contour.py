@@ -8,15 +8,15 @@ from Face import Face
 
 
 class Contour:
-    def __init__(self, face_one: Face, points1, face_two: Face, points2):
+    def __init__(self, face_one: Face, face_two: Face):
         self._face_one = face_one
         self._face_two = face_two
-        self._points1 = points1
-        self._points2 = points2
+        # self._points1 = points1
+        # self._points2 = points2
         self._speed = []
 
     @staticmethod
-    def line(points, image):
+    def line(self, points, image, window_name):
         list_of_polynomial_points = []
 
         for j in range(len(points) - 1):
@@ -37,7 +37,7 @@ class Contour:
                            2, [255, 0, 0], -1
                            )
                 list_of_polynomial_points.append(tuple_point)
-
+        # cv2.imshow(window_name, image)
         # self.speed(list_of_polynomial_points)
         #
         # self.plotting(list_of_polynomial_points, image)
@@ -49,15 +49,16 @@ class Contour:
         image_two_copy = self._face_two.image.copy()
 
         # Draw new lines on the copies
-        self.line(self._points1, image_one_copy)
-        self.line(self._points2, image_two_copy)
-
+        self.line(self._face_one.points, image_one_copy, self._face_one.window_name)
+        self.line(self._face_two.points, image_two_copy, self._face_one.window_name)
+        cv2.imshow(self._face_one.window_name, image_one_copy)
+        cv2.imshow(self._face_two.window_name, image_two_copy)
         # Update the original images with the copies
-        self._face_one.image[:] = image_one_copy
-        self._face_two.image[:] = image_two_copy
-
-        self.line(self._points1, self._face_one.image)
-        self.line(self._points2, self._face_two.image)
+        # self._face_one.image[:] = image_one_copy
+        # self._face_two.image[:] = image_two_copy
+        #
+        # self.line(self._points1, self._face_one.image)
+        # self.line(self._points2, self._face_two.image)
 
     def speed(self, list_of_points):
         for i in range(len(list_of_points) - 1):
