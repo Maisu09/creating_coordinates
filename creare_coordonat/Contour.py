@@ -4,16 +4,19 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+from Face import Face
+
 
 class Contour:
-    def __init__(self, face_one, points1, face_two, points2):
+    def __init__(self, face_one: Face, points1, face_two: Face, points2):
         self._face_one = face_one
         self._face_two = face_two
         self._points1 = points1
         self._points2 = points2
         self._speed = []
 
-    def line(self, points, image):
+    @staticmethod
+    def line(points, image):
         list_of_polynomial_points = []
 
         for j in range(len(points) - 1):
@@ -41,6 +44,18 @@ class Contour:
 
     def polynom_draw(self):
         """Primeste data puncte din dictionar si creaza linia."""
+        # Create copies of the original images
+        image_one_copy = self._face_one.image.copy()
+        image_two_copy = self._face_two.image.copy()
+
+        # Draw new lines on the copies
+        self.line(self._points1, image_one_copy)
+        self.line(self._points2, image_two_copy)
+
+        # Update the original images with the copies
+        self._face_one.image[:] = image_one_copy
+        self._face_two.image[:] = image_two_copy
+
         self.line(self._points1, self._face_one.image)
         self.line(self._points2, self._face_two.image)
 
