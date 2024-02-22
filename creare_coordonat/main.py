@@ -81,7 +81,7 @@ def moving_points():
 
     draw_button = tk.Button(root, text="Draw", command=points_drawing)
     draw_button.pack()
-    print(file_path1)
+    # print(file_path1)
 
     canvas = tk.Canvas(root, width=800, height=600)
     canvas.pack()

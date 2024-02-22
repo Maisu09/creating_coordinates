@@ -59,7 +59,7 @@ class ImageManipulation:
                 color = (255, 0, 0) if i == self.selected_point_index else (0, 255, 0)
 
                 for j in range(len(image_copy)):
-                    print(str(j) + "---------------------------")
+                    # print(str(j) + "---------------------------")
                     if j % 2 == 0:
                         cv2.circle(image_copy[j], (x_p1, y_p1), 10, color, -1)
                         cv2.imshow(self._face_one.window_name if j == 0 else self._face_start.window_name,
@@ -119,13 +119,13 @@ class ImageManipulation:
             # self.verify_button_down(mouse_x, mouse_y, self._points1)
             self.verify_button_down(mouse_x, mouse_y, self._face_one.points)
 
-            print("primul")
+            # print("primul")
             self.update_only_second = False
 
         elif event == cv2.EVENT_LBUTTONDOWN and param == self._face_two.window_name:
             # self.verify_button_down(mouse_x, mouse_y, self._points2)
             self.verify_button_down(mouse_x, mouse_y, self._face_two.points)
-            print("al doilea")
+            # print("al doilea")
 
             self.update_only_second = True
 
@@ -148,12 +148,12 @@ class ImageManipulation:
             # for i, key in enumerate(self._points2):
             #     print(key, self._points2.get(key))
             # print('\n')
-            for i, key in enumerate(self._face_one.points):
-                print(key, self._face_one.points.get(key))
-            print('\n')
-            for i, key in enumerate(self._face_two.points):
-                print(key, self._face_two.points.get(key))
-            print('\n')
+            # for i, key in enumerate(self._face_one.points):
+            #     print(key, self._face_one.points.get(key))
+            # print('\n')
+            # for i, key in enumerate(self._face_two.points):
+            #     print(key, self._face_two.points.get(key))
+            # print('\n')
 
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
             if self.update_only_second is False:
