@@ -33,6 +33,17 @@ class ImageManipulation:
         add_point_button.pack()
         polynom_button = tkinter.Button(root, text='Connect Points', command=self.connect_points)
         polynom_button.pack()
+        
+        self.speed_movement_button = tkinter.Button(root, text='Move speeds', command=self.move_speeds)
+        self.speed_movement_button.pack()
+
+    def move_speeds(self):
+        if self.speed_movement_button.config('text')[-1] == 'Move points':
+            self.speed_movement_button.config(text='Move speeds')
+            print(self.speed_movement_button.config('text')[-1])    
+        else:
+            self.speed_movement_button.config(text='Move points')
+            print(self.speed_movement_button.config("text")[-1])
 
     def connect_points(self):
         contour = Contour(self._face_one, self._face_two)
