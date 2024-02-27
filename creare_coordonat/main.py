@@ -88,10 +88,5 @@ def moving_points():
 
     root.mainloop()
 
-
-def main():
-    moving_points()
-
-
 if __name__ == "__main__":
-    main()
+    moving_points()
