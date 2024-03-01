@@ -4,6 +4,7 @@ from tkinter import filedialog
 from Contour import Contour
 from SysManipulation import SysManipulation
 from Face import Face
+# vitezele is calculte ca si dif intre punc alastru care  e varf ves\ctor si punctu de poz. trebe sa fie initial suprapuse si dupa sa le pot muta
 
 class ImageManipulation:
     def __init__(self, points1: dict, file_path1, image1, file_path2, image2):
@@ -29,10 +30,11 @@ class ImageManipulation:
 
         add_point_button = tkinter.Button(root, text='Add point', command=self.add_point)
         add_point_button.pack()
+        
         polynom_button = tkinter.Button(root, text='Connect Points', command=self.connect_points)
         polynom_button.pack()
         
-        self.speed_movement_button = tkinter.Button(root, text='Move speeds', command=self.move_speeds)
+        self.speed_movement_button = tkinter.Button(root, text='Move speeds', command=self.switch)
         self.speed_movement_button.pack()
    
     def setSpeeds(self, points:dict):
@@ -44,13 +46,13 @@ class ImageManipulation:
         
         speed = []
         for x, y in list_points:
-            speed.append([x + 50, y + 50])        
+            speed.append([x, y])        
         return speed
 
-    def move_speeds(self):
+    def switch(self):
         if self.speed_movement_button.config('text')[-1] == 'Move points':
             self.speed_movement_button.config(text='Move speeds')
-            print(self.speed_movement_button.config('text')[-1])    
+            print(self.speed_movement_button.config('text')[-1])
         else:
             self.speed_movement_button.config(text='Move points')
             print(self.speed_movement_button.config("text")[-1])
@@ -101,7 +103,7 @@ class ImageManipulation:
                         cv2.circle(image_copy[j], (elem[0], elem[1]), 5, color, -1)
                         cv2.imshow(self._face_two.window_name if j == 1 else self._face_end.window_name,
                                    image_copy[j])
-                        
+
         elif self.update_only_second is True:
             #pozitii
             for i, k in enumerate(self._face_two.points):
@@ -128,6 +130,7 @@ class ImageManipulation:
                         cv2.circle(image_copy[j], (elem[0], elem[1]), 5, color, -1)
                         cv2.imshow(self._face_two.window_name if j == 1 else self._face_end.window_name,
                                     image_copy[j])
+
     def draw_points(self):
         image1_copy = self._face_one.image.copy()
         image2_copy = self._face_two.image.copy()
@@ -145,6 +148,16 @@ class ImageManipulation:
         time = point.get(key)[2]
         point.update({key: (mouse_x, mouse_y, time)})
 
+    def update_speeds(self):
+        if self.speed_movement_button.config('text')[-1] == 'Move speeds':
+            # Calculate speeds as the difference between the positions
+            self._speeds = []
+            for key in self._face_one.points:
+                x_p1, y_p1 = self._face_one.points[key][:2]
+                x_p2, y_p2 = self._face_two.points[key][:2]
+                speed_x = x_p2 - x_p1
+                speed_y = y_p2 - y_p1
+                self._speeds.append([speed_x, speed_y])
     def verify_button_down(self, mouse_x, mouse_y, point):
         
         if self.speed_movement_button.config('text')[-1] == 'Move points':
@@ -165,13 +178,14 @@ class ImageManipulation:
                     self.selected_point_index = i
                     break
                 
+    
     def on_mouse_event(self, event, mouse_x, mouse_y, flags, param, selected_point_index=None):
         if event == cv2.EVENT_LBUTTONDOWN and param == self._face_one.window_name:
             # self.verify_button_down(mouse_x, mouse_y, self._points1)
-            # if self.speed_movement_button.config('text')[-1] == 'Move points':
-            self.verify_button_down(mouse_x, mouse_y, self._face_one.points)
-            # else: 
-            #     self.verify_button_down(mouse_x, mouse_y, self._face_one.points)
+            if self.speed_movement_button.config('text')[-1] == 'Move points':
+                self.verify_button_down(mouse_x, mouse_y, self._face_one.points)
+            elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
+                self.verify_button_down(mouse_x, mouse_y, self._speeds)
                 
             # print("primul")
             self.update_only_second = False
@@ -216,9 +230,10 @@ class ImageManipulation:
                 if self.speed_movement_button.config('text')[-1] == 'Move points':
                     self.update_points(mouse_x, mouse_y, self._face_one.points)
                     self._face_two.points = self._face_one.points.copy()
-
+                elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
+                    self.update_speeds()
             elif self.update_only_second:
                 if self.speed_movement_button.config('text')[-1] == 'Move points':
                     self.update_points(mouse_x, mouse_y, self._face_two.points)
-
+                    self.update_speeds()
         self.draw_points()
