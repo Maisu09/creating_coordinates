@@ -4,6 +4,7 @@ from tkinter import filedialog
 from Contour import Contour
 from SysManipulation import SysManipulation
 from Face import Face
+import math
 # vitezele is calculte ca si dif intre punc alastru care  e varf ves\ctor si punctu de poz. trebe sa fie initial suprapuse si dupa sa le pot muta
 
 class ImageManipulation:
@@ -15,8 +16,7 @@ class ImageManipulation:
         self._face_two = Face(file_path2, image2, 'Second face', self._face_one.points.copy())
         self._face_start = Face(file_path1, image1, 'Starting face', self._face_one.points)
         self._face_end = Face(file_path2, image2, 'Ending face', self._face_two.points)
-        
-        self._speeds = self.setSpeeds(self._face_one.points)
+
         root = tkinter.Tk()
 
         # cv2.namedWindow(self._face_one.window_name)
@@ -36,23 +36,16 @@ class ImageManipulation:
         
         self.speed_movement_button = tkinter.Button(root, text='Move speeds', command=self.switch)
         self.speed_movement_button.pack()
-   
-    def setSpeeds(self, points:dict):
-        list_points = [] 
-        for i,k in enumerate(points):
-            elems = points.get(k)
-            list_points.append([elems[0], elems[1]])
-        print(list_points)
         
-        speed = []
-        for x, y in list_points:
-            speed.append([x, y])        
-        return speed
+                
+        self._speeds_face_one = self.update_speeds(self._face_one.speed_points, self._face_one.points, 1)
+        self._speeds_face_two = self.update_speeds(self._face_two.speed_points, self._face_two.points, 2)
 
     def switch(self):
         if self.speed_movement_button.config('text')[-1] == 'Move points':
             self.speed_movement_button.config(text='Move speeds')
             print(self.speed_movement_button.config('text')[-1])
+
         else:
             self.speed_movement_button.config(text='Move points')
             print(self.speed_movement_button.config("text")[-1])
@@ -93,7 +86,7 @@ class ImageManipulation:
             #viteze
             color = (255, 0, 0)
         
-            for elem in self._speeds:
+            for elem in self._face_one.speed_points:
                 for j in range(len(image_copy)):
                     if j % 2 == 0:
                         cv2.circle(image_copy[j], (elem[0], elem[1]), 5, color, -1)
@@ -120,7 +113,7 @@ class ImageManipulation:
             cv2.imshow(self._face_end.window_name, image_copy[3])
             #viteze
             color = (255, 0, 0)
-            for elem in self._speeds:
+            for elem in self._face_two.speed_points:
                 for j in range(len(image_copy)):
                     if j % 2 == 0:
                         cv2.circle(image_copy[j], (elem[0], elem[1]), 5, color, -1)
@@ -143,21 +136,41 @@ class ImageManipulation:
         # else:
         #     self.draw_move_speeds(image1_copy, image2_copy, image_start_copy, image_end_copy)
 
-    def update_points(self, mouse_x, mouse_y, point):
+    def update_points(self, mouse_x, mouse_y, point_positions:dict, point_speeds:list):
         key = "p" + str(self.selected_point_index)
-        time = point.get(key)[2]
-        point.update({key: (mouse_x, mouse_y, time)})
+        time = point_positions.get(key)[2]
+        # positionx_before = point_positions.get(key)[0]
+        # positiony_before = point_positions.get(key)[1]
+        point_speeds[self.selected_point_index][0] = (point_speeds[self.selected_point_index][0] - point_positions.get(key)[0]) + mouse_x
+        point_speeds[self.selected_point_index][1] = (point_speeds[self.selected_point_index][1] - point_positions.get(key)[1]) + mouse_y
+        point_positions.update({key: (mouse_x, mouse_y, time)})
+        
+        print(point_positions.get(key), point_speeds[self.selected_point_index])
 
-    def update_speeds(self):
+    def update_speeds(self, speed_points:list, position_points:dict, face_identifier:int):
         if self.speed_movement_button.config('text')[-1] == 'Move speeds':
             # Calculate speeds as the difference between the positions
-            self._speeds = []
-            for key in self._face_one.points:
-                x_p1, y_p1 = self._face_one.points[key][:2]
-                x_p2, y_p2 = self._face_two.points[key][:2]
-                speed_x = x_p2 - x_p1
-                speed_y = y_p2 - y_p1
-                self._speeds.append([speed_x, speed_y])
+            returned_speed = []
+            for i, k in enumerate(position_points):
+                point = position_points.get(k)
+                print(point, type(point))
+                if face_identifier == 1:
+                    # print(speed_points[0], speed_points[1], type(speed_points[0]), type(speed_points[1]))
+                    returned_speed.append(
+                        math.sqrt(
+                                pow((point[0] - speed_points[i][0]), 2) + pow((point[1] - speed_points[i][1]), 2)
+                        )
+                    )
+                    print(returned_speed[i])
+                elif face_identifier == 2:
+                    returned_speed.append(
+                        math.sqrt(
+                                pow((point[0] - speed_points[i][0]), 2) + pow((point[1] - speed_points[i][1]), 2)
+                        )
+                    )
+            print(returned_speed)
+            return speed_points
+                    
     def verify_button_down(self, mouse_x, mouse_y, point):
         
         if self.speed_movement_button.config('text')[-1] == 'Move points':
@@ -171,7 +184,7 @@ class ImageManipulation:
                     break
                 
         elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
-            for i, elem in enumerate(self._speeds):
+            for i, elem in enumerate(point):
                 x = elem[0]
                 y = elem[1]
                 if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
@@ -180,60 +193,42 @@ class ImageManipulation:
                 
     
     def on_mouse_event(self, event, mouse_x, mouse_y, flags, param, selected_point_index=None):
+        
         if event == cv2.EVENT_LBUTTONDOWN and param == self._face_one.window_name:
-            # self.verify_button_down(mouse_x, mouse_y, self._points1)
+            
             if self.speed_movement_button.config('text')[-1] == 'Move points':
                 self.verify_button_down(mouse_x, mouse_y, self._face_one.points)
+                
             elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
-                self.verify_button_down(mouse_x, mouse_y, self._speeds)
+                self.verify_button_down(mouse_x, mouse_y, self._face_one._speed_points)
                 
             # print("primul")
             self.update_only_second = False
 
         elif event == cv2.EVENT_LBUTTONDOWN and param == self._face_two.window_name:
-            # self.verify_button_down(mouse_x, mouse_y, self._points2)
-            # if self.speed_movement_button.config('text')[-1] == 'Move points':
-            self.verify_button_down(mouse_x, mouse_y, self._face_two.points)
-            # print("al doilea")
-            # else:
-            #     pass
+            
+            if self.speed_movement_button.config('text')[-1] == 'Move points':
+                self.verify_button_down(mouse_x, mouse_y, self._face_two.points)
+                
+            elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
+                self.verify_button_down(mouse_x, mouse_y, self._face_two._speed_points)
             self.update_only_second = True
-
-            # for i, k in enumerate(self._points1):
-            #     # print(param)
-            #     values_of_dict = self._points1.get(k)
-            #     x = values_of_dict[0]
-            #     y = values_of_dict[1]
-            #
-            #     if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
-            #         self.selected_point_index = i
 
         elif event == cv2.EVENT_LBUTTONUP:
             self.selected_point_index = None
 
-            # verificare modificare puncte in dict
-            # for i, key in enumerate(self._points1):
-            #     print(key, self._points1.get(key))
-            # print('\n')
-            # for i, key in enumerate(self._points2):
-            #     print(key, self._points2.get(key))
-            # print('\n')
-            # for i, key in enumerate(self._face_one.points):
-            #     print(key, self._face_one.points.get(key))
-            # print('\n')
-            # for i, key in enumerate(self._face_two.points):
-            #     print(key, self._face_two.points.get(key))
-            # print('\n')
-
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
             if self.update_only_second is False:
                 if self.speed_movement_button.config('text')[-1] == 'Move points':
-                    self.update_points(mouse_x, mouse_y, self._face_one.points)
+                    self.update_points(mouse_x, mouse_y, self._face_one.points, self._face_one.speed_points)
                     self._face_two.points = self._face_one.points.copy()
-                elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
-                    self.update_speeds()
+                    self.update_speeds(self._face_two.speed_points, self._face_two.points, 1)
+                # elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
+                #     self.update_speeds(self._face_one.speed_points, self._face_one.points, 1)
+                #     self._face_two.speed_points = self._face_one.speed_points.copy()
+                #     print(self._face_two.speed_points)
             elif self.update_only_second:
                 if self.speed_movement_button.config('text')[-1] == 'Move points':
-                    self.update_points(mouse_x, mouse_y, self._face_two.points)
-                    self.update_speeds()
+                    self.update_points(mouse_x, mouse_y, self._face_two.points, self._face_two.speed_points)
+                    self.update_speeds(self._face_two.speed_points, self._face_two.points, 2)
         self.draw_points()
