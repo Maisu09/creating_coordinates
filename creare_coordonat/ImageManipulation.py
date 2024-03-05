@@ -61,7 +61,7 @@ class ImageManipulation:
         self._face_one.speed_points.append([500, 500])
         self._face_two.points = self._face_one.points.copy()
         self._face_two.speed_points.append([500, 500])
-    
+        
     def draw_points_on_img(self, points_positions:dict, points_speeds:list, window_name:list, *image_copy):
         
         #positions
@@ -89,7 +89,6 @@ class ImageManipulation:
             cv2.imshow(window_name[1], image_copy[1])
             
         
-
     def draw_points_logic(self):
         image1_copy = self._face_one.image.copy()
         image2_copy = self._face_two.image.copy()
@@ -102,30 +101,9 @@ class ImageManipulation:
 
         elif self.update_only_second:
             self.draw_points_on_img(self._face_two.points, self._face_two.speed_points, [self._face_two.window_name, self._face_end.window_name],image2_copy, image_end_copy)
-        # image1_copy = self._face_one.image.copy()
-        # image2_copy = self._face_two.image.copy()
-        # image_start_copy = self._face_start.image.copy()
-        # image_end_copy = self._face_end.image.copy()
-
-        # if self.update_only_second == False:
-        #     self.draw_points_on_img(
-        #         self._face_one.points, self._face_one.speed_points, [self._face_one.window_name, self._face_start.window_name],
-        #         image1_copy, image_start_copy
-        #     )
-        #     self.draw_points_on_img(
-        #         self._face_two.points, self._face_two.speed_points, [self._face_two.window_name, self._face_end.window_name],
-        #         image2_copy, image_end_copy
-        #     )
-
-        # elif self.update_only_second:
-        #     self.draw_points_on_img(
-        #         self._face_two.points, self._face_two.speed_points, [self._face_two.window_name, self._face_end.window_name],
-        #         image2_copy, image_end_copy
-        #     )
 
 
-
-    # def update_points(self, mouse_x, mouse_y, point_positions:dict, point_speeds:list):
+    # def update_points_positions(self, mouse_x, mouse_y, point_positions:dict, point_speeds:list):
     #     key = "p" + str(self.selected_point_index)
     #     time = point_positions.get(key)[2]
     #     # positionx_before = point_positions.get(key)[0]
@@ -136,7 +114,7 @@ class ImageManipulation:
         
     #     print(point_positions.get(key), point_speeds[self.selected_point_index])
 
-    # def update_points(self, mouse_x, mouse_y, point_positions: dict, point_speeds: list):
+    # def update_points_positions(self, mouse_x, mouse_y, point_positions: dict, point_speeds: list):
     #     key = "p" + str(self.selected_point_index)
     #     time = point_positions.get(key)[2]
 
@@ -157,7 +135,8 @@ class ImageManipulation:
     #     point_speeds[self.selected_point_index][0] = mouse_x
     #     point_speeds[self.selected_point_index][1] = mouse_y
     
-    def update_points(self, mouse_x, mouse_y, point_positions: dict, point_speeds: list):
+    
+    def update_points_positions(self, mouse_x, mouse_y, point_positions: dict, point_speeds: list):
         key = "p" + str(self.selected_point_index)
         time = point_positions.get(key)[2]
 
@@ -174,6 +153,12 @@ class ImageManipulation:
 
         point_speeds[self.selected_point_index][0] = mouse_x
         point_speeds[self.selected_point_index][1] = mouse_y
+   
+    def update_points_speeds(self, mouse_x, mouse_y, *points_speeds):
+
+        for elem in points_speeds:
+            elem[self.selected_point_index][0] = mouse_x
+            elem[self.selected_point_index][1] = mouse_y            
 
     def update_speeds(self, speed_points:list, position_points:dict, face_identifier:int):
         if self.speed_movement_button.config('text')[-1] == 'Move speeds':
@@ -212,7 +197,7 @@ class ImageManipulation:
                     break
                 
         elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
-            for i, elem in enumerate(point):
+            for i,elem in enumerate(point):
                 x = elem[0]
                 y = elem[1]
                 if abs(x - mouse_x) < 10 and abs(y - mouse_y) < 10:
@@ -254,7 +239,7 @@ class ImageManipulation:
         # elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
         #     if self.update_only_second is False:
         #         if self.speed_movement_button.config('text')[-1] == 'Move points':
-        #             self.update_points(mouse_x, mouse_y, self._face_one.points, self._face_one.speed_points)
+        #             self.update_points_positions(mouse_x, mouse_y, self._face_one.points, self._face_one.speed_points)
         #             self._face_two.points = self._face_one.points.copy()
         #             self.update_speeds(self._face_two.speed_points, self._face_two.points, 1)
         #         # elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
@@ -263,20 +248,29 @@ class ImageManipulation:
         #         #     print(self._face_two.speed_points)
         #     elif self.update_only_second:
         #         if self.speed_movement_button.config('text')[-1] == 'Move points':
-        #             self.update_points(mouse_x, mouse_y, self._face_two.points, self._face_two.speed_points)
+        #             self.update_points_positions(mouse_x, mouse_y, self._face_two.points, self._face_two.speed_points)
         #             self.update_speeds(self._face_two.speed_points, self._face_two.points, 2)
         
         elif event == cv2.EVENT_MOUSEMOVE and self.selected_point_index is not None:
             if self.update_only_second is False:
                 if self.speed_movement_button.config('text')[-1] == 'Move points':
-                    self.update_points(mouse_x, mouse_y, self._face_one.points, self._face_one.speed_points)
+                    self.update_points_positions(mouse_x, mouse_y, self._face_one.points, self._face_one.speed_points)
                     self._face_two.points = self._face_one.points.copy()
                     self.update_speeds(self._face_two.speed_points, self._face_two.points, 1)
+                    
+                elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
+                    # self.update_points_speeds(mouse_x, mouse_y)
+                    self.update_points_speeds(mouse_x, mouse_y, self._face_one.speed_points, self._face_two.speed_points)
+                    
             elif self.update_only_second:
                 if self.speed_movement_button.config('text')[-1] == 'Move points':
-                    self.update_points(mouse_x, mouse_y, self._face_two.points, self._face_two.speed_points)
+                    self.update_points_positions(mouse_x, mouse_y, self._face_two.points, self._face_two.speed_points)
                     self.update_speeds(self._face_two.speed_points, self._face_two.points, 2)
-        
+                    
+                elif self.speed_movement_button.config('text')[-1] == 'Move speeds':
+                    # self.update_points_speeds(mouse_x, mouse_y)
+                    self.update_points_speeds(mouse_x, mouse_y, self._face_two.speed_points)
        
         
         self.draw_points_logic()
+        
