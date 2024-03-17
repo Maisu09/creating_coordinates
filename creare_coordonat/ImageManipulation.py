@@ -1,3 +1,4 @@
+import os
 import cv2
 import tkinter
 from tkinter import filedialog
@@ -37,9 +38,27 @@ class ImageManipulation:
         self.speed_movement_button = tkinter.Button(root, text='Move speeds', command=self.switch)
         self.speed_movement_button.pack()
 
+        self.save_points_button = tkinter.Button(root, text='Save points', command=self.save_points)
+        self.save_points_button.pack()
 
         self._speeds_face_one = self.update_speeds(self._face_one.speed_points, self._face_one.points, 1)
         self._speeds_face_two = self.update_speeds(self._face_two.speed_points, self._face_two.points, 2)
+        
+        canvas = tkinter.Canvas(root, width=300, height=100)
+        canvas.pack()
+
+
+    def save_points(self):
+
+        SysManipulation.create_folder_in_dir('points')
+
+        print(os.getcwd())
+        SysManipulation.save_points(self._face_one.points, self._face_one.window_name)
+        SysManipulation.save_points(self._face_two.points, self._face_two.window_name)
+        os.chdir('..')
+        print(os.getcwd())
+        
+        
 
     def switch(self):
         if self.speed_movement_button.config('text')[-1] == 'Move points':
@@ -101,40 +120,6 @@ class ImageManipulation:
 
         elif self.update_only_second:
             self.draw_points_on_img(self._face_two.points, self._face_two.speed_points, [self._face_two.window_name, self._face_end.window_name],image2_copy, image_end_copy)
-
-
-    # def update_points_positions(self, mouse_x, mouse_y, point_positions:dict, point_speeds:list):
-    #     key = "p" + str(self.selected_point_index)
-    #     time = point_positions.get(key)[2]
-    #     # positionx_before = point_positions.get(key)[0]
-    #     # positiony_before = point_positions.get(key)[1]
-    #     point_speeds[self.selected_point_index][0] = (point_speeds[self.selected_point_index][0] - point_positions.get(key)[0]) + mouse_x
-    #     point_speeds[self.selected_point_index][1] = (point_speeds[self.selected_point_index][1] - point_positions.get(key)[1]) + mouse_y
-    #     point_positions.update({key: (mouse_x, mouse_y, time)})
-        
-    #     print(point_positions.get(key), point_speeds[self.selected_point_index])
-
-    # def update_points_positions(self, mouse_x, mouse_y, point_positions: dict, point_speeds: list):
-    #     key = "p" + str(self.selected_point_index)
-    #     time = point_positions.get(key)[2]
-
-    #     if self.update_only_second is False:
-    #         point_positions.update({key: (mouse_x, mouse_y, time)})
-    #         self._face_two.points[key] = (mouse_x, mouse_y, time)
-    #         self._face_two.speed_points[self.selected_point_index][0] = mouse_x
-    #         self._face_two.speed_points[self.selected_point_index][1] = mouse_y
-    #         print(point_positions.get(key), self._face_one.speed_points[self.selected_point_index])
-
-    #     elif self.update_only_second:
-    #         point_positions.update({key: (mouse_x, mouse_y, time)})
-    #         self._face_one.points[key] = (mouse_x, mouse_y, time)  # Update points for _face_one
-    #         self._face_one.speed_points[self.selected_point_index][0] = mouse_x
-    #         self._face_one.speed_points[self.selected_point_index][1] = mouse_y
-    #         print(point_positions.get(key), self._face_two.speed_points[self.selected_point_index])
-
-    #     point_speeds[self.selected_point_index][0] = mouse_x
-    #     point_speeds[self.selected_point_index][1] = mouse_y
-    
     
     def update_points_positions(self, mouse_x, mouse_y, point_positions: dict, point_speeds: list):
         key = "p" + str(self.selected_point_index)
