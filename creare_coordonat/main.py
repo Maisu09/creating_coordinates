@@ -22,22 +22,6 @@ points1 = {
 points2 = points1.copy()
 
 
-def save_traced_img(img_copy):
-    """ Takes as parameter the traced image and saves it in the out folder """
-
-    os.chdir("..")
-    # print(os.getcwd())
-
-    try:
-        os.chdir(rf'{os.getcwd()}' + '\\' + 'poze_generate')
-        # print(os.getcwd())
-
-        cv2.imwrite('image.jpg', img_copy)
-        # print(os.listdir())
-    except os.getcwd() != r'C:\Users\mflor\Desktop\Licenta':
-        print('The current working directory is not well defined!')
-
-
 def clicked_at(event):
     print(f"clicked:{event.x}, {event.y}")
 
@@ -83,7 +67,7 @@ def moving_points():
     draw_button.pack()
     # print(file_path1)
 
-    canvas = tk.Canvas(root, width=800, height=600)
+    canvas = tk.Canvas(root, width=300, height=300)
     canvas.pack()
 
     root.mainloop()
