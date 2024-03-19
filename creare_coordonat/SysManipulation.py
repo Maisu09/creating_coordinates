@@ -29,5 +29,32 @@ class SysManipulation:
                 elem_in_dict = points.get(k)
                 file.write(str(elem_in_dict[0]) + '          ' + str(elem_in_dict[1])+'\n')
 
+    @staticmethod
+    def load_from_folder(name:str):
+        name = name + '.txt'
+        points_dict={}
+        # print(os.getcwd())
+        with open(name, "r") as file:
+            i = 0
+            for line in file.readlines():
+                key = 'p' + str(i)
+                print(line)
+                j=0
+                while line[j] is not ' ':
+                    j += 1
+                
+                x_coord = int(line[:j])
+                print(x_coord)
+                line = line[j:]
+                line.strip()
+                y_coord = int(line)
+                print(y_coord)
+                
+                points_dict.update({key: [x_coord, y_coord, i*100]})
+                i += 1
+        return points_dict
+                
+                
+            
                 
              
