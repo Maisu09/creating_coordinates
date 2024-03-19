@@ -40,6 +40,9 @@ class ImageManipulation:
 
         self.save_points_button = tkinter.Button(root, text='Save points', command=self.save_points)
         self.save_points_button.pack()
+        
+        self.load_points_button = tkinter.Button(root, text='Load points', command=self.load_points)
+        self.load_points_button.pack()
 
         self._speeds_face_one = self.update_speeds(self._face_one.speed_points, self._face_one.points, 1)
         self._speeds_face_two = self.update_speeds(self._face_two.speed_points, self._face_two.points, 2)
@@ -47,6 +50,17 @@ class ImageManipulation:
         canvas = tkinter.Canvas(root, width=300, height=100)
         canvas.pack()
 
+
+    def load_points(self):
+        os.chdir("points")
+        self._face_one.points = SysManipulation.load_from_folder(self._face_one.window_name)
+        self._face_start.points = self._face_one.points
+        self._face_two.points = SysManipulation.load_from_folder(self._face_two.window_name)
+        self._face_end.points = self._face_two.points
+        self.update_only_second = False
+        self.draw_points_logic()
+        
+        
 
     def save_points(self):
 
