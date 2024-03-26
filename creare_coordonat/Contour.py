@@ -17,7 +17,7 @@ class Contour:
     def solving_polinom(self, points):
         #3rd degree polinom : x(t)=a+bt+ct^2+dt^3, y(t)=a1+b1t+c1t^2+d1t^3
 
-        v1x = 100
+        v1x = 0
         v1y = 0
         v2x = 0
         v2y = 0
