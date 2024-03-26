@@ -1,7 +1,6 @@
 import os
 import cv2
 import tkinter
-from tkinter import filedialog
 from Contour import Contour
 from SysManipulation import SysManipulation
 from Face import Face
@@ -52,14 +51,18 @@ class ImageManipulation:
 
 
     def load_points(self):
-        os.chdir("points")
-        self._face_one.points = SysManipulation.load_from_folder(self._face_one.window_name)
-        self._face_start.points = self._face_one.points
-        self._face_two.points = SysManipulation.load_from_folder(self._face_two.window_name)
-        self._face_end.points = self._face_two.points
+        try:
+            os.chdir("points")
+        except FileNotFoundError:
+            print("In folder already") 
+        self._face_one.points, self._face_one.speed_points = SysManipulation.load_from_folder(self._face_one.window_name)
+        self._face_start.points, self._face_start.speed_points = self._face_one.points, self._face_one.speed_points
+    
+        self._face_two.points, self._face_two.speed_points = SysManipulation.load_from_folder(self._face_two.window_name)
+        self._face_end.points, self._face_end.speed_points = self._face_two.points, self._face_two.speed_points
+        
         self.update_only_second = False
         self.draw_points_logic()
-        
         
 
     def save_points(self):
@@ -67,8 +70,8 @@ class ImageManipulation:
         SysManipulation.create_folder_in_dir('points')
 
         print(os.getcwd())
-        SysManipulation.save_points(self._face_one.points, self._face_one.window_name)
-        SysManipulation.save_points(self._face_two.points, self._face_two.window_name)
+        SysManipulation.save_points(self._face_one.points, self._face_one.window_name, self._face_one.speed_points)
+        SysManipulation.save_points(self._face_two.points, self._face_two.window_name, self._face_two.speed_points)
         os.chdir('..')
         print(os.getcwd())
         
