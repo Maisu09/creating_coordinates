@@ -7,6 +7,8 @@ class SysManipulation:
     @staticmethod
     def create_folder_in_dir(folder_name:str):
         """ Changing wd to the directory where images are stored. """
+        if os.getcwd() != r'C:\Users\mflor\Desktop\Licenta':
+            os.chdir(r'C:\Users\mflor\Desktop\Licenta')
         try:
             os.mkdir(folder_name)
         except FileExistsError:
@@ -27,7 +29,8 @@ class SysManipulation:
             
             for i,k in enumerate(points):
                 elem_in_dict = points.get(k)
-                file.write(str(elem_in_dict[0]) + '          ' + str(elem_in_dict[1]) + '          ' + str(speeds[i][0]) + '          ' + str(speeds[i][1]))
+                print(speeds[i][0], speeds[i][1])
+                file.write(str(elem_in_dict[0]) + '          ' + str(elem_in_dict[1]) + '          ' + str(speeds[i][0]) + '          ' + str(speeds[i][1]) + '\n')
             
     @staticmethod
     def load_from_folder(name: str):
