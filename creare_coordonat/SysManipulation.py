@@ -55,7 +55,7 @@ class SysManipulation:
                     while line[after] != ' ' and line[after] != '\n':  # Fix: added condition for newline
                         after += 1
                         
-                    line_elems.append(int(line[before:after]))  # Fix: Convert string to int
+                    line_elems.append(int(float(line[before:after])))  # Fix: Convert string to int
                 
                 x_coord, y_coord, x_speed, y_speed = line_elems
                 
