@@ -25,10 +25,10 @@ class Contour:
             x_p1, y_p1, t_p1 = positions['p' + str(i)]
             x_p2, y_p2, t_p2 = positions['p' + str(i + 1)]
 
-            v1x = speeds[i][0] - x_p1
-            v1y = speeds[i][1] - y_p1
-            v2x = speeds[i][0] - x_p2
-            v2y = speeds[i][1] - y_p2
+            v1x = - speeds[i][0] + x_p1 
+            v1y = - speeds[i][1] + y_p1 
+            v2x = - speeds[i+1][0] + x_p2 
+            v2y = - speeds[i+1][1] + y_p2
             
             ax = x_p1
             bx = v1x
